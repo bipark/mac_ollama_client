@@ -1,0 +1,57 @@
+/* 
+  Localizable.strings
+  macollama
+
+  Created by BillyPark on 2/3/25.
+  
+*/
+"l_new" = "신규";
+"l_copy" = "복사";
+"l_waiting" = "응답을 기다리는 중...";
+"l_reask" = "재질문";
+"l_save" = "저장";
+"l_delete" = "삭제";
+"l_delete_message" = "메세지삭제";
+"l_cancel" = "취소";
+"l_del_question" = "삭제하시겠습니까?";
+"l_copy_finish" = "복사되었습니다";
+"l_save_conv" = "대화 내용 저장";
+"l_save_finish" = "저장되었습니다";
+"l_save_fail" = "저장 실패";
+"l_delete_finish" = "삭제되었습니다";
+"l_delete_fail" = "삭제 실패";
+"l_ollama_sddress" = "올라마서버 주소";
+"l_llm_inst" = "LLM 지침";
+"l_temperature" = "온도";
+"l_ollama_download" = "올라마 다운로드";
+"l_ollama_method" = "올라마 서버에 외부 접속을 허용하는 방법";
+"l_opensource" = "이 프로그램은 오픈소스입니다";
+"l_version" = "버전";
+"l_delete_all" = "전체삭제";
+"l_settings" = "설정";
+"l_close" = "닫기";
+"l_delete_all" = "데이터 전체 삭제";
+"l_delete_all_question" = "데이터 전체를 삭제할까요?";
+"l_input_message" = "질문을 입력하세요";
+"l_start" = "질의실행";
+"l_load_image" = "이미지";
+"l_search" = "검색";
+"l_ollama_model" = "올라마 모델 ";
+"l_refresh" = "새로고침";
+"l_select_model" = "모델 선택";
+"l_copy_all" = "전체복사";
+"l_model_load_fail" = "모델 로드 오류";
+"l_ok" = "확인";
+"l_retry" = "재시도";
+"l_error_occurred" = "알수없는 오류가 발생했습니다.";
+"l_copied" = "복사되었습니다";
+"l_error1" = "올바르지 않은 서버 주소입니다.";
+"l_error2" = "서버 연결에 실패했습니다.\n서버가 실행 중인지 확인해주세요.";
+"l_error3" = "서버로부터 잘못된 응답을 받았습니다.";
+"l_error4" = "응답 데이터 처리에 실패했습니다.";
+"l_q1" = "MacOlama란 무엇인가요?";
+"l_a1" = "MacOllama는 Ollama와 통신하는 클라이언트 앱입니다. 사용자는 MacOllama를 통해 컴퓨터에 설치된 LLM에 질문을 할 수 있습니다. https://ollama.com/download에서 Ollama 를 다운받고 https://ollama.com/search 에서 다양한 모델들을 설치할수 있습니다.";
+"l_q2" = "Ollama에 어떻게 연결하나요?";
+"l_a2" = "설정에서 Ollama의 주소를 입력하면 메인 화면에서 서버에 연결할 수 있습니다. 현재 사용하는 컴퓨터에 Ollama를 설치했다면 http://localhost:11434로 설정하고, 다른 컴퓨터에 연결하고 싶다면 ollama가 설치된 컴퓨터의 IP를 입력하고 http://practical.kr/?p=828 링크를 참조해서 포트를 오픈하고 사용할수 있습니다.";
+"l_q3" = "이미지를 어떻게 분석하나요?";
+"l_a3" = "ollama에는 이미지를 분석할 수 있는 사전 설치된 LLM이 있어야 합니다(예: llama3.2-vision).그리고 앱에서 이미지를 선택하고 질문하고 답변을 받을 수 있습니다.";
