@@ -1,7 +1,7 @@
 <div align='center'>
 
 
-# ✨ Mac用Olamaクライアント ✨
+# ✨ LLM Hippo - Mac用Olamaクライアント ✨
 
 _Ollama-based LLM Mac client_
 
@@ -12,14 +12,14 @@ _Ollama-based LLM Mac client_
 
 </div>
 
-#MacOllama
+#LLM Hippo
 
-MacOllamaは、Ollamaがインストールされているコンピュータに接続して大規模言語モデル（LLM）と対話できるMacクライアントアプリです。ソースコードをダウンロードしてビルドするか、[Apple App Store]（https://apps.apple.com/us/app/mac-ollama-client/id6741420139）からMacOllamaアプリをダウンロードできます。
+LLM Hippoは、Ollamaがインストールされているコンピュータに接続して大規模言語モデル（LLM）と対話できるMacクライアントアプリです。ソースコードをダウンロードしてビルドするか、[Apple App Store]（https://apps.apple.com/us/app/mac-ollama-client/id6741420139）からLLM Hippoアプリをダウンロードできます。
 
 ##はじめに
 
 Ollamaは、ローカルコンピュータで大規模言語モデル（LLM）を簡単に実行できるオープンソースソフトウェアです。
-MacOllamaを使用してOllamaにアクセスし、さまざまなLLMを活用できます。 MyOllama - Ollamaプログラムを使用すると、自分のコンピュータでLLMを実行して、有料なしでAIモデルと対話できます。
+LLM Hippoを使用してOllamaにアクセスし、さまざまなLLMを活用できます。 MyOllama - Ollamaプログラムを使用すると、自分のコンピュータでLLMを実行して、有料なしでAIモデルと対話できます。
 
 ![ポスター](image_en.jpg)
 

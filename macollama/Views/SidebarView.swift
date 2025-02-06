@@ -45,6 +45,7 @@ struct SidebarView: View {
                     .foregroundColor(.gray)
                 TextField("l_search".localized, text: $searchText)
                     .textFieldStyle(.plain)
+                    .foregroundColor(.primary)
                     .onChange(of: searchText) { newValue in
                         isSearching = !newValue.isEmpty
                         Task {

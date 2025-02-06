@@ -80,8 +80,8 @@ struct MessageBubble: View {
                 }
             }
             .padding(12)
-            .background(message.isUser ? Color.white : Color.orange.opacity(0.3))
-            .foregroundColor(.white)
+            .background(message.isUser ? Color(NSColor.textBackgroundColor) : Color.orange.opacity(0.3))
+            .foregroundColor(message.isUser ? .primary : .white)
             .clipShape(RoundedRectangle(cornerRadius: 12))
 
             if !message.isUser {

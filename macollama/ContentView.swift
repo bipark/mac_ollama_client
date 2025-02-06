@@ -14,7 +14,6 @@ struct ContentView: View {
     @State private var showingSettings = false
     @State private var models: [String] = []
     @AppStorage("selectedModel") private var selectedModel: String?
-    @State private var isLoadingModels: Bool = false
     @State private var errorMessage: String?
     @State private var showingError = false
     @State private var showCopyAlert = false
@@ -34,38 +33,32 @@ struct ContentView: View {
     
     private var modelSelectionMenu: some View {
         HStack {
-            if isLoadingModels {
-                ProgressView()
-                    .scaleEffect(0.5)
-                    .frame(width: 20)
-            } else {
-                Text("l_ollama_model".localized)
-                Menu {
-                    ForEach(models, id: \.self) { model in
-                        Button(action: {
-                            selectedModel = model
-                        }) {
-                            Text(model)
-                        }
-                    }
-                    Divider()
-                    Button(action: { Task { await loadModels() } }) {
-                        Label("l_refresh".localized, systemImage: "arrow.clockwise")
-                    }
-                } label: {
-                    HStack {
-                        Text(selectedModel ?? "l_select_model".localized)
-                        Image(systemName: "chevron.down")
+            Text("l_ollama_model".localized)
+            Menu {
+                ForEach(models, id: \.self) { model in
+                    Button(action: {
+                        selectedModel = model
+                    }) {
+                        Text(model)
                     }
                 }
-                Spacer().frame(width: 50)
-                HoverImageButton(
-                    imageName: "document.on.document",
-                    toolTip: "l_copy_all".localized,
-                    tooltipPosition: .bottom
-                ) {
-                    copyAllMessages()
+                Divider()
+                Button(action: { Task { await loadModels() } }) {
+                    Label("l_refresh".localized, systemImage: "arrow.clockwise")
                 }
+            } label: {
+                HStack {
+                    Text(selectedModel ?? "l_select_model".localized)
+                    Image(systemName: "chevron.down")
+                }
+            }
+            Spacer().frame(width: 50)
+            HoverImageButton(
+                imageName: "document.on.document",
+                toolTip: "l_copy_all".localized,
+                tooltipPosition: .bottom
+            ) {
+                copyAllMessages()
             }
         }
     }
@@ -103,7 +96,7 @@ struct ContentView: View {
                 }
             }
         } message: {
-            Text(errorMessage ?? "l_error_occurred".localized)
+            Text("l_set_url".localized)
         }
         .overlay {
             if showCopyAlert {
@@ -118,31 +111,30 @@ struct ContentView: View {
             }
         }
         .animation(.easeInOut(duration: 0.2), value: showCopyAlert)
+        .background(Color(NSColor.windowBackgroundColor))
     }
     
+    @MainActor
     func loadModels() async {
-        isLoadingModels = true
-        
-        Task {
-            do {
-                models = try await OllamaService.shared.listModels()
-                await MainActor.run {
-                    if selectedModel == nil || !models.contains(selectedModel!) {
-                        selectedModel = models.first
-                    }
-                    isLoadingModels = false
-                }
-            } catch OllamaError.invalidURL {
-                await showError("l_error1".localized)
-            } catch OllamaError.requestFailed {
-                await showError("l_error2".localized)
-            } catch OllamaError.invalidResponse {
-                await showError("l_error3".localized)
-            } catch OllamaError.decodingError {
-                await showError("l_error4".localized)
-            } catch {
-                await showError("\(error.localizedDescription)")
+        do {
+            let newModels = try await OllamaService.shared.listModels()
+            models = newModels
+            
+            if newModels.isEmpty {
+                selectedModel = nil
+            } else if selectedModel == nil || !newModels.contains(selectedModel!) {
+                selectedModel = newModels.first
             }
+        } catch OllamaError.invalidURL {
+            await showError("l_error1".localized)
+        } catch OllamaError.requestFailed {
+            await showError("l_error2".localized)
+        } catch OllamaError.invalidResponse {
+            await showError("l_error3".localized)
+        } catch OllamaError.decodingError {
+            await showError("l_error4".localized)
+        } catch {
+            await showError("\(error.localizedDescription)")
         }
     }
     
@@ -150,7 +142,6 @@ struct ContentView: View {
     private func showError(_ message: String) {
         errorMessage = message
         showingError = true
-        isLoadingModels = false
     }
     
     private func copyAllMessages() {

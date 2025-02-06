@@ -10,12 +10,13 @@ enum OllamaError: Error {
 
 class OllamaService {
     static let shared = OllamaService()
-    private let baseURL: String
     
-    private init() {
-        self.baseURL = UserDefaults.standard.string(forKey: "serverAddress") ?? "http://localhost:11434"
+    var baseURL: String {
+        UserDefaults.standard.string(forKey: "serverAddress") ?? "http://localhost:11434"
     }
-        
+    
+    private init() {}
+    
     func generateResponse(prompt: String, image: NSImage? = nil, model: String) async throws -> AsyncThrowingStream<String, Error> {
         let url = URL(string: "\(baseURL)/api/chat")!
         var request = URLRequest(url: url)
@@ -117,8 +118,7 @@ class OllamaService {
     }
     
     func listModels() async throws -> [String] {
-        let serverAddress = UserDefaults.standard.string(forKey: "serverAddress") ?? "http://localhost:11434"
-        guard let url = URL(string: "\(serverAddress)/api/tags") else {
+        guard let url = URL(string: "\(baseURL)/api/tags") else {
             throw OllamaError.invalidURL
         }
         

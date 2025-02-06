@@ -76,7 +76,7 @@ class DatabaseManager {
                     question: question.localized,
                     answer: answer.localized,
                     image: nil,
-                    engine: "MacOllama"
+                    engine: "LLM Hippo"
                 )
             }
         } catch {

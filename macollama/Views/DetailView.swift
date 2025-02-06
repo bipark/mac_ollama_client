@@ -64,8 +64,13 @@ struct DetailView: View {
                     .cornerRadius(8)
                     .background(
                         RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.gray.opacity(0.5))
+                            .fill(Color(NSColor.textBackgroundColor))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.gray.opacity(0.5))
+                            )
                     )
+                    .foregroundColor(.primary)
                     .focused($isTextFieldFocused)
                     .onSubmit {
                         sendMessage()
@@ -82,7 +87,7 @@ struct DetailView: View {
                 }
             }
             .padding()
-            .background(Color.white)
+            .background(Color(NSColor.windowBackgroundColor))
             .overlay(
                 Divider(), alignment: .top
             )

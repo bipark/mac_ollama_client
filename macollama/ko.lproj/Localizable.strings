@@ -40,7 +40,7 @@
 "l_refresh" = "새로고침";
 "l_select_model" = "모델 선택";
 "l_copy_all" = "전체복사";
-"l_model_load_fail" = "모델 로드 오류";
+"l_model_load_fail" = "올라마 서버 설정";
 "l_ok" = "확인";
 "l_retry" = "재시도";
 "l_error_occurred" = "알수없는 오류가 발생했습니다.";
@@ -49,9 +49,10 @@
 "l_error2" = "서버 연결에 실패했습니다.\n서버가 실행 중인지 확인해주세요.";
 "l_error3" = "서버로부터 잘못된 응답을 받았습니다.";
 "l_error4" = "응답 데이터 처리에 실패했습니다.";
-"l_q1" = "MacOlama란 무엇인가요?";
-"l_a1" = "MacOllama는 Ollama와 통신하는 클라이언트 앱입니다. 사용자는 MacOllama를 통해 컴퓨터에 설치된 LLM에 질문을 할 수 있습니다. https://ollama.com/download에서 Ollama 를 다운받고 https://ollama.com/search 에서 다양한 모델들을 설치할수 있습니다.";
+"l_q1" = "LLM Hippo란 무엇인가요?";
+"l_a1" = "LLM Hippo는 Ollama와 통신하는 클라이언트 앱입니다. 사용자는 LLM Hippo를 통해 컴퓨터에 설치된 LLM에 질문을 할 수 있습니다. https://ollama.com/download에서 Ollama 를 다운받고 https://ollama.com/search 에서 다양한 모델들을 설치할수 있습니다.";
 "l_q2" = "Ollama에 어떻게 연결하나요?";
 "l_a2" = "설정에서 Ollama의 주소를 입력하면 메인 화면에서 서버에 연결할 수 있습니다. 현재 사용하는 컴퓨터에 Ollama를 설치했다면 http://localhost:11434로 설정하고, 다른 컴퓨터에 연결하고 싶다면 ollama가 설치된 컴퓨터의 IP를 입력하고 http://practical.kr/?p=828 링크를 참조해서 포트를 오픈하고 사용할수 있습니다.";
 "l_q3" = "이미지를 어떻게 분석하나요?";
 "l_a3" = "ollama에는 이미지를 분석할 수 있는 사전 설치된 LLM이 있어야 합니다(예: llama3.2-vision).그리고 앱에서 이미지를 선택하고 질문하고 답변을 받을 수 있습니다.";
+"l_set_url" = "설정으로 이동해서 올바른 서버주소를 입력해주세요";

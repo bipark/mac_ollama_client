@@ -19,6 +19,8 @@ struct SettingsView: View {
                             TextEditor(text: $serverAddress)
                                 .font(.body)
                                 .padding(10)
+                                .foregroundColor(.primary)
+                                .background(Color(NSColor.textBackgroundColor))
                         }
                         .background(Color.white)
                         .overlay(
@@ -35,6 +37,8 @@ struct SettingsView: View {
                                 .font(.body)
                                 .padding(10)
                                 .frame(height: 100)
+                                .foregroundColor(.primary)
+                                .background(Color(NSColor.textBackgroundColor))
                         }
                         .background(Color.white)
                         .overlay(
@@ -50,6 +54,8 @@ struct SettingsView: View {
                             TextField("", value: $temperature, format: .number)
                                 .padding(10)
                                 .font(.body)
+                                .foregroundColor(.primary)
+                                .background(Color(NSColor.textBackgroundColor))
                         }
                         .background(Color.white)
                         .overlay(
@@ -61,20 +67,12 @@ struct SettingsView: View {
                 
                 Section {
                     HStack {
-                        Image(systemName: "arrow.down.circle")
-                        Link("l_ollama_download".localized, destination: URL(string: "https://ollama.com/download")!)
-                    }
-                    HStack {
                         Image(systemName: "questionmark.circle")
                         Link("l_ollama_method".localized, destination: URL(string: "http://practical.kr/?p=809")!)
                     }
                 }
                 
                 Section {
-                    HStack {
-                        Image(systemName: "doc.text")
-                        Link("l_opensource".localized, destination: URL(string: "https://github.com/bipark/mac_ollama_client")!)
-                    }
                     HStack {
                         Image(systemName: "info.circle")
                         Text("l_version".localized)
@@ -104,18 +102,22 @@ struct SettingsView: View {
             .toolbar {
                 ToolbarItem(placement: .automatic) {
                     Button("l_close".localized) {
-                        saveSettings()
-                        dismiss()
                         if originalServerAddress != serverAddress {
                             Task {
+                                saveSettings()
+                                try? await Task.sleep(nanoseconds: 100_000_000)
                                 await ContentView.shared.loadModels()
+                                dismiss()
                             }
+                        } else {
+                            saveSettings()
+                            dismiss()
                         }
                     }
                 }
             }
         }
-        .frame(width: 600, height: 600)
+        .frame(width: 600, height: 540)
         .fixedSize()
         .alert("l_delete_all".localized, isPresented: $showingDeleteAlert) {
             Button("l_cancel".localized, role: .cancel) { }
@@ -134,6 +136,7 @@ struct SettingsView: View {
         UserDefaults.standard.set(serverAddress, forKey: "serverAddress")
         UserDefaults.standard.set(llmInstruction, forKey: "llmInstruction")
         UserDefaults.standard.set(temperature, forKey: "temperature")
+        UserDefaults.standard.synchronize()
     }
     
     private func deleteAllData() {
