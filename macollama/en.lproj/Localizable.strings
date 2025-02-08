@@ -55,3 +55,4 @@
 "l_q3" = "How do I use the image feature?";
 "l_a3" = "Using the image feature is simple:\n1. Click the image button next to the input box\n2. Select an image to upload\n3. Enter your question\n4. Click send\n\nI'll analyze the image content and answer your question.";
 "l_set_url" = "Go to Settings and enter the correct server address";
+"l_stop" = "Stop";

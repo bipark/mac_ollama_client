@@ -8,16 +8,24 @@ enum OllamaError: Error {
     case decodingError
 }
 
-class OllamaService {
+class OllamaService: NSObject, URLSessionDataDelegate {
     static let shared = OllamaService()
+    private var continuation: AsyncThrowingStream<String, Error>.Continuation?
+    private var lastReceivedContent: String?
+    private var currentModel: String?
+    private var currentTask: URLSessionDataTask?
     
     var baseURL: String {
         UserDefaults.standard.string(forKey: "serverAddress") ?? "http://localhost:11434"
     }
     
-    private init() {}
+    private override init() {
+        super.init()
+    }
     
     func generateResponse(prompt: String, image: NSImage? = nil, model: String) async throws -> AsyncThrowingStream<String, Error> {
+        currentModel = model
+        
         let url = URL(string: "\(baseURL)/api/chat")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -70,44 +78,62 @@ class OllamaService {
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
         
         return AsyncThrowingStream { continuation in
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
-                    continuation.finish(throwing: error)
-                    return
-                }
-                
-                guard let httpResponse = response as? HTTPURLResponse else {
-                    continuation.finish(throwing: OllamaError.invalidResponse)
-                    return
-                }
-                
-                guard (200...299).contains(httpResponse.statusCode) else {
-                    continuation.finish(throwing: OllamaError.requestFailed)
-                    return
-                }
-                
-                guard let data = data else {
-                    continuation.finish(throwing: OllamaError.invalidResponse)
-                    return
-                }
-                
-                let lines = String(decoding: data, as: UTF8.self).components(separatedBy: "\n")
-                for line in lines where !line.isEmpty {
-                    do {
-                        if let jsonData = line.data(using: .utf8),
-                           let response = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
-                           let message = response["message"] as? [String: Any],
-                           let content = message["content"] as? String {
-                            continuation.yield(content)
-                        }
-                    } catch {
-                        continuation.finish(throwing: error)
-                        return
-                    }
-                }
-                continuation.finish()
-            }
+            self.continuation = continuation
+            let session = URLSession(configuration: .default, delegate: self, delegateQueue: .main)
+            let task = session.dataTask(with: request)
+            self.currentTask = task
             task.resume()
+            
+            continuation.onTermination = { @Sendable _ in
+                task.cancel()
+                session.invalidateAndCancel()
+                self.currentTask = nil
+            }
+        }
+    }
+    
+    func urlSession(_ session: URLSession, 
+                   dataTask: URLSessionDataTask, 
+                   didReceive data: Data) {
+        guard let text = String(data: data, encoding: .utf8) else { return }
+        
+        text.components(separatedBy: "\n")
+            .filter { !$0.isEmpty }
+            .forEach { line in
+                do {
+                    if let jsonData = line.data(using: .utf8),
+                       let response = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any] {
+                        
+                        if let done = response["done"] as? Bool, done {
+                            if let lastContent = lastReceivedContent,
+                               let model = currentModel {
+                                continuation?.yield("\(lastContent)\n\n**[\(model)]**")
+                            }
+                            continuation?.finish()
+                            continuation = nil
+                            currentModel = nil
+                            lastReceivedContent = nil
+                            return
+                        }
+                        
+                        if let message = response["message"] as? [String: Any],
+                           let content = message["content"] as? String {
+                            lastReceivedContent = content
+                            continuation?.yield(content)
+                        }
+                    }
+                } catch {
+                    print("Error parsing JSON: \(error)")
+                }
+            }
+    }
+    
+    func urlSession(_ session: URLSession,
+                   task: URLSessionTask,
+                   didCompleteWithError error: Error?) {
+        if let error = error {
+            continuation?.finish(throwing: error)
+            continuation = nil
         }
     }
     
@@ -138,5 +164,14 @@ class OllamaService {
         }
         
         throw OllamaError.decodingError
+    }
+    
+    func cancelGeneration() {
+        currentTask?.cancel()
+        currentTask = nil
+        continuation?.finish()
+        continuation = nil
+        currentModel = nil
+        lastReceivedContent = nil
     }
 } 

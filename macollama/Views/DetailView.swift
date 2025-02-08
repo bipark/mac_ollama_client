@@ -6,6 +6,7 @@ struct DetailView: View {
     @StateObject private var viewModel = ChatViewModel.shared
     @Namespace private var bottomID
     @FocusState private var isTextFieldFocused: Bool
+    @State private var isGenerating = false  // 통신 상태 추적
     
     var body: some View {
         VStack(spacing: 0) {
@@ -77,10 +78,20 @@ struct DetailView: View {
                     }
                 
                 Spacer().frame(width: 6)
-                HoverImageButton(imageName: "arrow.up.circle", toolTip: "l_start".localized, size: 22, btnColor : .blue) {
-                    sendMessage()
+                HoverImageButton(
+                    imageName: isGenerating ? "stop.circle" : "arrow.up.circle",
+                    toolTip: isGenerating ? "l_stop".localized : "l_start".localized,
+                    size: 22,
+                    btnColor: .blue
+                ) {
+                    if isGenerating {
+                        OllamaService.shared.cancelGeneration()
+                        isGenerating = false
+                    } else {
+                        sendMessage()
+                    }
                 }
-                .disabled(viewModel.messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+//                .disabled(viewModel.messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
 
                 HoverImageButton(imageName: "photo", toolTip: "l_load_image".localized, size: 22, btnColor : .blue) {
                     selectImage()
@@ -123,13 +134,17 @@ struct DetailView: View {
     }
     
     private func sendMessage() {
-        let trimmedText = viewModel.messageText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedText.isEmpty else { return }
+        guard let selectedModel = selectedModel,
+              !viewModel.messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return
+        }
         
+        let currentText = viewModel.messageText
         let currentImage = viewModel.selectedImage
-        let currentText = trimmedText
+        
         viewModel.messageText = ""
         viewModel.selectedImage = nil
+        isGenerating = true  // 통신 시작
         
         let userMessage = ChatMessage(
             id: viewModel.messages.count * 2,
@@ -137,7 +152,7 @@ struct DetailView: View {
             isUser: true,
             timestamp: Date(),
             image: currentImage,
-            engine: selectedModel ?? ""
+            engine: selectedModel
         )
         viewModel.messages.append(userMessage)
         
@@ -147,7 +162,7 @@ struct DetailView: View {
             isUser: false,
             timestamp: Date(),
             image: nil,
-            engine: selectedModel ?? ""
+            engine: selectedModel
         )
         viewModel.messages.append(waitingMessage)
         
@@ -157,7 +172,7 @@ struct DetailView: View {
                 let stream = try await OllamaService.shared.generateResponse(
                     prompt: currentText,
                     image: currentImage,
-                    model: selectedModel ?? ""
+                    model: selectedModel
                 )
                 
                 for try await response in stream {
@@ -170,7 +185,7 @@ struct DetailView: View {
                             isUser: false,
                             timestamp: viewModel.messages[index].timestamp,
                             image: nil,
-                            engine: selectedModel ?? ""
+                            engine: selectedModel
                         )
                         viewModel.messages[index] = updatedMessage
                     }
@@ -182,7 +197,7 @@ struct DetailView: View {
                     question: currentText,
                     answer: fullResponse,
                     image: currentImage,
-                    engine: selectedModel ?? ""
+                    engine: selectedModel
                 )
                 
                 Task { @MainActor in
@@ -197,11 +212,13 @@ struct DetailView: View {
                         isUser: false,
                         timestamp: Date(),
                         image: nil,
-                        engine: selectedModel ?? ""
+                        engine: selectedModel
                     )
                     viewModel.messages[index] = errorMessage
                 }
             }
+            
+            isGenerating = false  // 통신 종료
         }
     }
 }

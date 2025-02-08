@@ -48,18 +48,22 @@ struct MessageBubble: View {
                     .frame(height: 20)
                 } else {
                     if !message.isUser {
-                        let contents = message.content + "<br>**[" + message.engine + "]**"
-                        SelectableText(text: contents)
-
+                        SelectableText(text: message.content)
 
                         HStack {
                             HoverImageButton(imageName: "arrow.counterclockwise.square", toolTip: "l_reask".localized) {
                                 if !message.isUser {
-                                    let questionId = message.id - 1
-                                    if let question = viewModel.messages.first(where: { $0.id == questionId }) {
-                                        viewModel.startNewChat()
-                                        viewModel.messageText = question.content
-                                        viewModel.shouldFocusTextField = true
+                                    if let currentIndex = viewModel.messages.firstIndex(where: { $0.id == message.id }),
+                                       currentIndex > 0 {
+                                        let previousMessage = viewModel.messages[currentIndex - 1]
+                                        if previousMessage.isUser {
+                                            viewModel.startNewChat()
+                                            viewModel.messageText = previousMessage.content
+                                            if let image = previousMessage.image {
+                                                viewModel.selectedImage = image
+                                            }
+                                            viewModel.shouldFocusTextField = true
+                                        }
                                     }
                                 }
                             }
