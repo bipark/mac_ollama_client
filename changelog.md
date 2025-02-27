@@ -9,3 +9,7 @@
 - Add SSE(Server-Sent Events) Function
 - Add Communication Stop Function
 
+### 2024/02/26
+
+- Add token speed
+- Support multi line input

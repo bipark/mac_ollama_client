@@ -7,6 +7,8 @@ struct DetailView: View {
     @Namespace private var bottomID
     @FocusState private var isTextFieldFocused: Bool
     @State private var isGenerating = false  // 통신 상태 추적
+    @State private var responseStartTime: Date? // 응답 시작 시간 추가
+    @State private var tokenCount: Int = 0 // 토큰 카운트 추가
     
     var body: some View {
         VStack(spacing: 0) {
@@ -59,9 +61,9 @@ struct DetailView: View {
             
             // Message input area
             HStack(spacing: 8) {
-                TextField("l_input_message".localized, text: $viewModel.messageText)
-                    .textFieldStyle(.plain)
-                    .padding(12)
+                TextEditor(text: $viewModel.messageText)
+                    .frame(height: 60)
+                    .padding(8)
                     .cornerRadius(8)
                     .background(
                         RoundedRectangle(cornerRadius: 10)
@@ -77,27 +79,32 @@ struct DetailView: View {
                         sendMessage()
                     }
                 
-                Spacer().frame(width: 6)
-                HoverImageButton(
-                    imageName: isGenerating ? "stop.circle" : "arrow.up.circle",
-                    toolTip: isGenerating ? "l_stop".localized : "l_start".localized,
-                    size: 22,
-                    btnColor: .blue
-                ) {
-                    if isGenerating {
-                        OllamaService.shared.cancelGeneration()
-                        isGenerating = false
-                    } else {
-                        sendMessage()
+                VStack(spacing: 8) {
+                    HoverImageButton(
+                        imageName: isGenerating ? "stop.circle" : "arrow.up.circle",
+                        toolTip: isGenerating ? "l_stop".localized : "l_start".localized,
+                        size: 22,
+                        btnColor: .blue
+                    ) {
+                        if isGenerating {
+                            OllamaService.shared.cancelGeneration()
+                            isGenerating = false
+                        } else {
+                            sendMessage()
+                        }
+                    }
+
+                    HoverImageButton(imageName: "photo", 
+                        toolTip: "l_load_image".localized, 
+                        size: 22, 
+                        btnColor: .blue
+                    ) {
+                        selectImage()
                     }
                 }
-//                .disabled(viewModel.messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-
-                HoverImageButton(imageName: "photo", toolTip: "l_load_image".localized, size: 22, btnColor : .blue) {
-                    selectImage()
-                }
             }
-            .padding()
+            .padding(.vertical, 12)
+            .padding(.horizontal)
             .background(Color(NSColor.windowBackgroundColor))
             .overlay(
                 Divider(), alignment: .top
@@ -146,6 +153,9 @@ struct DetailView: View {
         viewModel.selectedImage = nil
         isGenerating = true  // 통신 시작
         
+        responseStartTime = Date() // 응답 시작 시간 기록
+        tokenCount = 0 // 토큰 카운트 초기화
+        
         let userMessage = ChatMessage(
             id: viewModel.messages.count * 2,
             content: currentText,
@@ -177,11 +187,30 @@ struct DetailView: View {
                 
                 for try await response in stream {
                     fullResponse += response
+                    tokenCount += response.count 
                     
                     if let index = viewModel.messages.lastIndex(where: { !$0.isUser }) {
                         let updatedMessage = ChatMessage(
                             id: viewModel.messages[index].id,
                             content: fullResponse,
+                            isUser: false,
+                            timestamp: viewModel.messages[index].timestamp,
+                            image: nil,
+                            engine: selectedModel
+                        )
+                        viewModel.messages[index] = updatedMessage
+                    }
+                }
+                
+                if let startTime = responseStartTime {
+                    let elapsedTime = Date().timeIntervalSince(startTime)
+                    let tokensPerSecond = Double(tokenCount) / elapsedTime
+                    let statsMessage = "\n\n---\n \(String(format: "%.1f", tokensPerSecond)) tokens/sec"
+                    
+                    if let index = viewModel.messages.lastIndex(where: { !$0.isUser }) {
+                        let updatedMessage = ChatMessage(
+                            id: viewModel.messages[index].id,
+                            content: fullResponse + statsMessage,
                             isUser: false,
                             timestamp: viewModel.messages[index].timestamp,
                             image: nil,
@@ -218,7 +247,9 @@ struct DetailView: View {
                 }
             }
             
-            isGenerating = false  // 통신 종료
+            isGenerating = false
+            responseStartTime = nil
+            tokenCount = 0 
         }
     }
 }
