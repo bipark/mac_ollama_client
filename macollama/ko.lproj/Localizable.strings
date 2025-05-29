@@ -57,3 +57,11 @@
 "l_a3" = "ollama에는 이미지를 분석할 수 있는 사전 설치된 LLM이 있어야 합니다(예: llama3.2-vision).그리고 앱에서 이미지를 선택하고 질문하고 답변을 받을 수 있습니다.";
 "l_set_url" = "설정으로 이동해서 올바른 서버주소를 입력해주세요";
 "l_stop" = "중지";
+"l_test_connection" = "서버연결 상태 확인";
+"l_connection_success" = "서버 연결 성공";
+"l_connection_fail_status" = "서버 연결 실패 (상태 코드:";
+"l_connection_fail" = "서버 연결 실패";
+"l_ai_model_instruction" = "AI 모델에게 기본적인 행동 방식을 지시하는 내용입니다.";
+"l_temperature_desc" = "값이 높을수록 다양하고 창의적인 응답을 생성합니다. (0.1~2.0)";
+"l_top_p_desc" = "다음 토큰을 선택할 때 확률 분포의 상위 P% 내에서만 선택합니다. (0.1~1.0)";
+"l_top_k_desc" = "다음 토큰을 선택할 때 가장 가능성이 높은 K개의 토큰 중에서만 선택합니다.";

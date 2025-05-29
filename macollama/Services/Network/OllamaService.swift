@@ -71,7 +71,9 @@ class OllamaService: NSObject, URLSessionDataDelegate {
             "messages": messages,
             "stream": true,
             "options": [
-                "temperature": UserDefaults.standard.double(forKey: "temperature")
+                "temperature": UserDefaults.standard.double(forKey: "temperature"),
+                "top_p": UserDefaults.standard.double(forKey: "topP"),
+                "top_k": UserDefaults.standard.double(forKey: "topK")
             ]
         ]
         
