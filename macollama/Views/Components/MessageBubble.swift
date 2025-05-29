@@ -51,7 +51,7 @@ struct MessageBubble: View {
                         SelectableText(text: message.content)
 
                         HStack {
-                            HoverImageButton(imageName: "arrow.counterclockwise.square", toolTip: "l_reask".localized) {
+                            HoverImageButton(imageName: "arrow.counterclockwise.square") {
                                 if !message.isUser {
                                     if let currentIndex = viewModel.messages.firstIndex(where: { $0.id == message.id }),
                                        currentIndex > 0 {
@@ -67,13 +67,13 @@ struct MessageBubble: View {
                                     }
                                 }
                             }
-                            HoverImageButton(imageName: "square.on.square", toolTip: "l_copy".localized){
+                            HoverImageButton(imageName: "square.on.square"){
                                 copyToClipboard()
                             }
-                            HoverImageButton(imageName: "square.and.arrow.down", toolTip: "l_save".localized){
+                            HoverImageButton(imageName: "square.and.arrow.down"){
                                 shareContent()
                             }
-                            HoverImageButton(imageName: "trash", toolTip: "l_delete".localized){
+                            HoverImageButton(imageName: "trash"){
                                 showingDeleteAlert = true
                             }
                         }

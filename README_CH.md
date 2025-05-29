@@ -26,14 +26,18 @@ Ollama 是一款开源软件，可让您在本地计算机上轻松运行大型�
 ## Key features
 
 - Local LLM access： 连接本地 LLM http://localhost:11434
-- 远程 LLM 访问： 自定义提示：支持设置自定义指令 - 支持
-各种开源 LLM（Deepseek、Llama、Gemma、Qwen、Mistral 等）
+- 远程 LLM 访问： 通过 IP 地址连接到 Ollama 主机
+- 自定义提示：支持设置自定义指令
+- 支持各种开源 LLM（Deepseek、Llama、Gemma、Qwen、Mistral 等）
 - 可自定义指令设置
+- **高级模型参数**：使用直观滑块控制 Temperature、Top P、Top K
+- **连接测试**：内置服务器连接状态检查器
+- **多格式文件支持**：图像、PDF 文档和文本文件
 - 支持图像识别（仅在支持图像识别的模型上）
-- 直观的聊天式用户界面 -
- 对话历史：保存和管理聊天会话
-- 支持韩语、英语、日语、中文 - 支持
- Markdown 格式
+- 直观的聊天式用户界面
+- 对话历史：保存和管理聊天会话
+- 支持韩语、英语、日语、中文
+- 支持 Markdown 格式
 
 ![poster](image_settings.jpg)
 

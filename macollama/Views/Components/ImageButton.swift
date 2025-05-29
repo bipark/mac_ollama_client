@@ -8,38 +8,26 @@
 import SwiftUI
 
 struct HoverImageButton: View {
-    enum TooltipPosition {
-        case top
-        case bottom
-    }
     
     let imageName: String
-    let toolTip: String
     let size: CGFloat
     let btnColor: Color
-    let tooltipPosition: TooltipPosition
     let action: () -> Void
     
     init(
         imageName: String = "plus",
-        toolTip: String = "",
         size: CGFloat = 18,
         btnColor: Color = .gray,
-        tooltipPosition: TooltipPosition = .top,
         action: @escaping () -> Void
     ) {
         self.imageName = imageName
-        self.toolTip = toolTip
         self.size = size
         self.btnColor = btnColor
-        self.tooltipPosition = tooltipPosition
         self.action = action
     }
     
     @State private var isHovered = false
     @State private var isTapped = false
-    @State private var showTooltip = false
-    
     @State private var hoverTimer: Timer?
     
     var body: some View {
@@ -66,7 +54,6 @@ struct HoverImageButton: View {
                     hoverTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { _ in
                         withAnimation(.easeInOut(duration: 0.2)) {
                             isHovered = hovering
-                            showTooltip = hovering
                         }
                     }
                 }
@@ -81,18 +68,7 @@ struct HoverImageButton: View {
                         }
                         action()
                     }
-                }
-            
-            if showTooltip && !toolTip.isEmpty {
-                Text(toolTip)
-                    .font(.caption)
-                    .foregroundColor(.white)
-                    .padding(4)
-                    .background(Color.black.opacity(0.7))
-                    .cornerRadius(4)
-                    .offset(y: tooltipPosition == .top ? -(size + 30) : (size + 30))
-                    .transition(.opacity)
-            }
+                }            
         }
     }
 }

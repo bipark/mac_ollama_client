@@ -1,5 +1,7 @@
 import SwiftUI
 import MarkdownUI
+import PDFKit
+import Cocoa
 
 struct DetailView: View {
     @Binding var selectedModel: String?
@@ -82,7 +84,6 @@ struct DetailView: View {
                 VStack(spacing: 8) {
                     HoverImageButton(
                         imageName: isGenerating ? "stop.circle" : "arrow.up.circle",
-                        toolTip: isGenerating ? "l_stop".localized : "l_start".localized,
                         size: 22,
                         btnColor: .blue
                     ) {
@@ -94,12 +95,12 @@ struct DetailView: View {
                         }
                     }
 
-                    HoverImageButton(imageName: "photo", 
-                        toolTip: "l_load_image".localized, 
+                    HoverImageButton(imageName: "doc.badge.plus", 
+                        // toolTip: "l_load_file".localized, 
                         size: 22, 
                         btnColor: .blue
                     ) {
-                        selectImage()
+                        selectFile()
                     }
                 }
             }
@@ -122,22 +123,94 @@ struct DetailView: View {
         proxy.scrollTo(bottomID, anchor: .bottom)
     }
     
-    private func selectImage() {
+    private func selectFile() {
         let panel = NSOpenPanel()
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
         panel.canChooseFiles = true
-        panel.allowedContentTypes = [.image]
+        panel.allowedContentTypes = [.image, .pdf, .plainText]
+        panel.allowedFileTypes = ["md", "markdown"]
         
         panel.begin { response in
             if response == .OK, let url = panel.url {
-                if let image = NSImage(contentsOf: url) {
-                    DispatchQueue.main.async {
-                        self.viewModel.selectedImage = image
+                let fileExtension = url.pathExtension.lowercased()
+                
+                DispatchQueue.main.async {
+                    switch fileExtension {
+                    case "jpg", "jpeg", "png", "gif", "bmp", "tiff", "webp":
+                        if let image = NSImage(contentsOf: url) {
+                            self.viewModel.selectedImage = image
+                        }
+                    case "pdf":
+                        let extractedText = self.extractTextFromPDF(pdfURL: url)
+                        if !extractedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                            self.viewModel.messageText += "\n[PDF 내용]\n" + extractedText
+                        }
+                    case "txt":
+                        do {
+                            let textContent = try String(contentsOf: url, encoding: .utf8)
+                            if !textContent.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                                self.viewModel.messageText += "\n[텍스트 파일 내용]\n" + textContent
+                            }
+                        } catch {
+                            print("텍스트 파일 읽기 실패: \(error)")
+                        }
+                    case "md", "markdown":
+                        do {
+                            let markdownContent = try String(contentsOf: url, encoding: .utf8)
+                            if !markdownContent.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                                self.viewModel.messageText += "\n[마크다운 파일 내용]\n" + markdownContent
+                            }
+                        } catch {
+                            print("마크다운 파일 읽기 실패: \(error)")
+                        }
+                    default:
+                        print("지원하지 않는 파일 형식: \(fileExtension)")
                     }
                 }
             }
         }
+    }
+    
+    private func extractTextFromPDF(pdfURL: URL) -> String {
+        guard let pdfDocument = PDFDocument(url: pdfURL) else { return "" }
+        var fullText = ""
+        
+        for pageIndex in 0..<pdfDocument.pageCount {
+            guard let page = pdfDocument.page(at: pageIndex) else { continue }
+            if let pageText = page.string {
+                fullText += pageText + "\n\n"
+            }
+        }
+        
+        return fullText
+    }
+    
+    private func convertPDFToImages(pdfURL: URL) -> [String] {
+        guard let pdfDocument = PDFDocument(url: pdfURL) else { return [] }
+        var base64Images: [String] = []
+        
+        for pageIndex in 0..<pdfDocument.pageCount {
+            guard let page = pdfDocument.page(at: pageIndex) else { continue }
+            
+            let pageRect = page.bounds(for: .mediaBox)
+            let image = NSImage(size: pageRect.size)
+            
+            image.lockFocus()
+            NSColor.white.setFill()
+            pageRect.fill()
+            page.draw(with: .mediaBox, to: NSGraphicsContext.current!.cgContext)
+            image.unlockFocus()
+            
+            if let tiffData = image.tiffRepresentation,
+               let bitmapRep = NSBitmapImageRep(data: tiffData),
+               let jpegData = bitmapRep.representation(using: .jpeg, properties: [:]) {
+                let base64String = jpegData.base64EncodedString()
+                base64Images.append(base64String)
+            }
+        }
+        
+        return base64Images
     }
     
     private func sendMessage() {

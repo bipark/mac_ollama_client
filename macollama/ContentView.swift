@@ -22,10 +22,10 @@ struct ContentView: View {
     
     private var toolbarContent: some View {
         HStack {
-            HoverImageButton(imageName: "plus", toolTip: "l_new".localized, tooltipPosition: .bottom) {
+            HoverImageButton(imageName: "plus") {
                 chatViewModel.startNewChat()
             }
-            HoverImageButton(imageName: "gearshape", toolTip: "l_settings".localized, tooltipPosition: .bottom) {
+            HoverImageButton(imageName: "gearshape") {
                 showingSettings = true
             }
         }
@@ -54,9 +54,7 @@ struct ContentView: View {
             }
             Spacer().frame(width: 50)
             HoverImageButton(
-                imageName: "document.on.document",
-                toolTip: "l_copy_all".localized,
-                tooltipPosition: .bottom
+                imageName: "document.on.document"
             ) {
                 copyAllMessages()
             }
@@ -81,7 +79,7 @@ struct ContentView: View {
             DetailView(selectedModel: $selectedModel)
         }
         .sheet(isPresented: $showingSettings) {
-            SettingsView()
+            SettingsView(isPresented: $showingSettings)
         }
         .task {
             await loadModels()

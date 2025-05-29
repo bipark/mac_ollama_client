@@ -29,6 +29,9 @@ You can use LLM Hippo to access Ollama and utilize various LLMs. MyOllama - Run 
 - Custom prompts: support for setting custom instructions
 - Supports various open source LLMs (Deepseek, Llama, Gemma, Qwen, Mistral, etc.)
 - Customizable instruction settings
+- **Advanced model parameters**: Temperature, Top P, Top K controls with intuitive sliders
+- **Connection testing**: Built-in server connection status checker
+- **Multi-format file support**: Images, PDF documents, and text files
 - Supports image recognition (only on models that support it)
 - Intuitive chat-like UI
 - Conversation history: save and manage chat sessions

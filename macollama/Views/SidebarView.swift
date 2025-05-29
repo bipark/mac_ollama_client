@@ -110,7 +110,7 @@ struct SidebarView: View {
                         }
                         
                         Spacer()
-                        HoverImageButton(imageName: "trash", toolTip: "l_delete".localized, size: 14, btnColor : .red, tooltipPosition: .top) {
+                        HoverImageButton(imageName: "trash", size: 14, btnColor : .red) {
                             itemToDelete = chat
                             showingDeleteAlert = true
                         }
