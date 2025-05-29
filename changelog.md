@@ -1,6 +1,6 @@
 # Change Log
 
-### 2025/02/08 - v1.1.0
+### 2025/05/29 - v1.1.0
 
 - **Enhanced Settings Panel**: Added Temperature, Top P, Top K parameter controls with intuitive sliders
 - **Connection Testing**: Added server connection status checker in settings
