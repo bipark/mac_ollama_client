@@ -51,15 +51,12 @@ struct MessageInputView: View {
                     .foregroundColor(.primary)
                     .focused($isTextFieldFocused)
                     .onKeyPress(.return) {
-                        // NSEvent를 통해 현재 modifier keys 확인
                         let event = NSApplication.shared.currentEvent
                         let shiftPressed = event?.modifierFlags.contains(.shift) ?? false
                         
                         if shiftPressed {
-                            // Shift+Enter: 줄바꿈 (기본 동작 허용)
                             return .ignored
                         } else {
-                            // Enter만: 메시지 전송
                             if !viewModel.messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                                 onSendMessage()
                             }
@@ -125,28 +122,28 @@ struct MessageInputView: View {
                     case "pdf":
                         let extractedText = self.extractTextFromPDF(pdfURL: url)
                         if !extractedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                            self.viewModel.messageText += "\n[PDF 내용]\n" + extractedText
+                            self.viewModel.messageText += "\n[PDF Content]\n" + extractedText
                         }
                     case "txt":
                         do {
                             let textContent = try String(contentsOf: url, encoding: .utf8)
                             if !textContent.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                                self.viewModel.messageText += "\n[텍스트 파일 내용]\n" + textContent
+                                self.viewModel.messageText += "\n[Text File Content]\n" + textContent
                             }
                         } catch {
-                            print("텍스트 파일 읽기 실패: \(error)")
+                            print("Text file read failed: \(error)")
                         }
                     case "md", "markdown":
                         do {
                             let markdownContent = try String(contentsOf: url, encoding: .utf8)
                             if !markdownContent.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                                self.viewModel.messageText += "\n[마크다운 파일 내용]\n" + markdownContent
+                                self.viewModel.messageText += "\n[Markdown File Content]\n" + markdownContent
                             }
                         } catch {
-                            print("마크다운 파일 읽기 실패: \(error)")
+                            print("Markdown file read failed: \(error)")
                         }
                     default:
-                        print("지원하지 않는 파일 형식: \(fileExtension)")
+                        print("Unsupported file format: \(fileExtension)")
                     }
                 }
             }
