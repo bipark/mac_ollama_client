@@ -8,9 +8,9 @@ struct DetailView: View {
     @StateObject private var viewModel = ChatViewModel.shared
     @Namespace private var bottomID
     @FocusState private var isTextFieldFocused: Bool
-    @State private var isGenerating = false  // 통신 상태 추적
-    @State private var responseStartTime: Date? // 응답 시작 시간 추가
-    @State private var tokenCount: Int = 0 // 토큰 카운트 추가
+    @State private var isGenerating = false 
+    @State private var responseStartTime: Date?
+    @State private var tokenCount: Int = 0
     
     var body: some View {
         VStack(spacing: 0) {
@@ -88,7 +88,7 @@ struct DetailView: View {
                         btnColor: .blue
                     ) {
                         if isGenerating {
-                            OllamaService.shared.cancelGeneration()
+                            LLMService.shared.cancelGeneration()
                             isGenerating = false
                         } else {
                             sendMessage()
@@ -96,7 +96,6 @@ struct DetailView: View {
                     }
 
                     HoverImageButton(imageName: "doc.badge.plus", 
-                        // toolTip: "l_load_file".localized, 
                         size: 22, 
                         btnColor: .blue
                     ) {
@@ -144,28 +143,28 @@ struct DetailView: View {
                     case "pdf":
                         let extractedText = self.extractTextFromPDF(pdfURL: url)
                         if !extractedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                            self.viewModel.messageText += "\n[PDF 내용]\n" + extractedText
+                            self.viewModel.messageText += "\n[PDF Content]\n" + extractedText
                         }
                     case "txt":
                         do {
                             let textContent = try String(contentsOf: url, encoding: .utf8)
                             if !textContent.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                                self.viewModel.messageText += "\n[텍스트 파일 내용]\n" + textContent
+                                self.viewModel.messageText += "\n[Text File Content]\n" + textContent
                             }
                         } catch {
-                            print("텍스트 파일 읽기 실패: \(error)")
+                            print("Text file read failed: \(error)")
                         }
                     case "md", "markdown":
                         do {
                             let markdownContent = try String(contentsOf: url, encoding: .utf8)
                             if !markdownContent.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                                self.viewModel.messageText += "\n[마크다운 파일 내용]\n" + markdownContent
+                                self.viewModel.messageText += "\n[Markdown File Content]\n" + markdownContent
                             }
                         } catch {
-                            print("마크다운 파일 읽기 실패: \(error)")
+                            print("Markdown file read failed: \(error)")
                         }
                     default:
-                        print("지원하지 않는 파일 형식: \(fileExtension)")
+                        print("Unsupported file format: \(fileExtension)")
                     }
                 }
             }
@@ -224,10 +223,10 @@ struct DetailView: View {
         
         viewModel.messageText = ""
         viewModel.selectedImage = nil
-        isGenerating = true  // 통신 시작
+        isGenerating = true  // Communication start
         
-        responseStartTime = Date() // 응답 시작 시간 기록
-        tokenCount = 0 // 토큰 카운트 초기화
+        responseStartTime = Date() // Record response start time
+        tokenCount = 0 // Initialize token count
         
         let userMessage = ChatMessage(
             id: viewModel.messages.count * 2,
@@ -252,7 +251,7 @@ struct DetailView: View {
         Task {
             do {
                 var fullResponse = ""
-                let stream = try await OllamaService.shared.generateResponse(
+                let stream = try await LLMService.shared.generateResponse(
                     prompt: currentText,
                     image: currentImage,
                     model: selectedModel

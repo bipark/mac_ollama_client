@@ -115,7 +115,7 @@ struct ContentView: View {
     @MainActor
     func loadModels() async {
         do {
-            let newModels = try await OllamaService.shared.listModels()
+            let newModels = try await LLMService.shared.listModels()
             models = newModels
             
             if newModels.isEmpty {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9F08A90E2DED791B00D5EFEC /* swift-llm-bridge in Frameworks */ = {isa = PBXBuildFile; productRef = 9F08A90D2DED791B00D5EFEC /* swift-llm-bridge */; };
 		9F63C8F12D49FB04001C2645 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 9F63C8F02D49FB04001C2645 /* SQLite */; };
 		9F63C9F32D4B61EB001C2645 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 9F63C9F22D4B61EB001C2645 /* MarkdownUI */; };
 		9F63CA502D4B7A46001C2645 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 9F63CA4F2D4B7A46001C2645 /* MarkdownUI */; };
@@ -47,6 +48,7 @@
 				9F775B862D4C642000FA1FA6 /* SQLite in Frameworks */,
 				9F63CA502D4B7A46001C2645 /* MarkdownUI in Frameworks */,
 				9F63C8F12D49FB04001C2645 /* SQLite in Frameworks */,
+				9F08A90E2DED791B00D5EFEC /* swift-llm-bridge in Frameworks */,
 				9F63C9F32D4B61EB001C2645 /* MarkdownUI in Frameworks */,
 				9F775B892D4C643900FA1FA6 /* MarkdownUI in Frameworks */,
 			);
@@ -124,6 +126,7 @@
 			packageReferences = (
 				9F775B842D4C642000FA1FA6 /* XCRemoteSwiftPackageReference "SQLite.swift" */,
 				9F775B872D4C643900FA1FA6 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+				9F08A90C2DED791B00D5EFEC /* XCRemoteSwiftPackageReference "swift-llm-bridge" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9F63C8C42D49F5C6001C2645 /* Products */;
@@ -362,6 +365,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		9F08A90C2DED791B00D5EFEC /* XCRemoteSwiftPackageReference "swift-llm-bridge" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bipark/swift-llm-bridge";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		9F63C8EF2D49FB04001C2645 /* XCRemoteSwiftPackageReference "SQLite.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stephencelis/SQLite.swift.git";
@@ -405,6 +416,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		9F08A90D2DED791B00D5EFEC /* swift-llm-bridge */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9F08A90C2DED791B00D5EFEC /* XCRemoteSwiftPackageReference "swift-llm-bridge" */;
+			productName = "swift-llm-bridge";
+		};
 		9F63C8F02D49FB04001C2645 /* SQLite */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 9F63C8EF2D49FB04001C2645 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
