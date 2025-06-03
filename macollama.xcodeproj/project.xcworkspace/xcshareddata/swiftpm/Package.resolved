@@ -1,5 +1,5 @@
 {
-  "originHash" : "aa446da2ededea193458e1dad88a46d834a8686795c9c4f5cfe758f5f59df7a0",
+  "originHash" : "8288a30163602bdf5faaedb2a6c3ab1471c41842a4e25c07334b3d39ada01ef8",
   "pins" : [
     {
       "identity" : "networkimage",
@@ -34,7 +34,7 @@
       "location" : "https://github.com/bipark/swift-llm-bridge",
       "state" : {
         "branch" : "main",
-        "revision" : "35ad6270ff60f0afddea7355911798a4211a39f3"
+        "revision" : "423acacdbe8ded5ee923e73558a5d94d5c84d247"
       }
     },
     {

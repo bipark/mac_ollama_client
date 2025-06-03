@@ -4,6 +4,12 @@ struct SettingsView: View {
     @Binding var isPresented: Bool
     @State private var serverAddress: String = UserDefaults.standard.string(forKey: "serverAddress") ?? "http://localhost:11434"
     @State private var originalServerAddress: String = UserDefaults.standard.string(forKey: "serverAddress") ?? "http://localhost:11434"
+    @State private var lmStudioAddress: String = UserDefaults.standard.string(forKey: "lmStudioAddress") ?? "http://localhost:1234"
+    @State private var originalLMStudioAddress: String = UserDefaults.standard.string(forKey: "lmStudioAddress") ?? "http://localhost:1234"
+    @State private var claudeApiKey: String = UserDefaults.standard.string(forKey: "claudeApiKey") ?? ""
+    @State private var originalClaudeApiKey: String = UserDefaults.standard.string(forKey: "claudeApiKey") ?? ""
+    @State private var openaiApiKey: String = UserDefaults.standard.string(forKey: "openaiApiKey") ?? ""
+    @State private var originalOpenaiApiKey: String = UserDefaults.standard.string(forKey: "openaiApiKey") ?? ""
     @State private var llmInstruction: String = UserDefaults.standard.string(forKey: "llmInstruction") ?? "You are a helpful assistant."
     @State private var temperature: Double = UserDefaults.standard.double(forKey: "temperature")
     @State private var topP: Double = UserDefaults.standard.double(forKey: "topP") != 0 ? UserDefaults.standard.double(forKey: "topP") : 0.9
@@ -11,6 +17,8 @@ struct SettingsView: View {
     @State private var showingDeleteAlert = false
     @State private var isTestingConnection = false
     @State private var connectionTestResult: String?
+    @State private var isTestingLMStudioConnection = false
+    @State private var lmStudioConnectionTestResult: String?
     
     init(isPresented: Binding<Bool> = .constant(false)) {
         self._isPresented = isPresented
@@ -58,6 +66,80 @@ struct SettingsView: View {
                                 .foregroundColor(result.contains("l_connection_success".localized) ? .green : .red)
                                 .padding(.top, 5)
                         }
+                    }
+                    
+                    VStack(alignment: .leading) {
+                        Text("LM Studio Address")
+                            .foregroundStyle(.secondary)
+                        HStack {
+                            VStack {
+                                TextEditor(text: $lmStudioAddress)
+                                    .font(.body)
+                                    .padding(10)
+                                    .foregroundColor(.primary)
+                                    .background(Color(NSColor.textBackgroundColor))
+                            }
+                            .background(Color.white)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 4)
+                                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                            )
+                            
+                            Button(action: {
+                                testLMStudioConnection()
+                            }) {
+                                if isTestingLMStudioConnection {
+                                    ProgressView()
+                                        .scaleEffect(0.7)
+                                } else {
+                                    Text("l_test_connection".localized)
+                                        .font(.caption)
+                                }
+                            }
+                            .disabled(isTestingLMStudioConnection)
+                            .buttonStyle(.bordered)
+                        }
+                        
+                        if let result = lmStudioConnectionTestResult {
+                            Text(result)
+                                .font(.caption)
+                                .foregroundColor(result.contains("l_connection_success".localized) ? .green : .red)
+                                .padding(.top, 5)
+                        }
+                    }
+                    
+                    VStack(alignment: .leading) {
+                        Text("Claude API Key")
+                            .foregroundStyle(.secondary)
+                        VStack {
+                            TextEditor(text: $claudeApiKey)
+                                .font(.body)
+                                .padding(10)
+                                .foregroundColor(.primary)
+                                .background(Color(NSColor.textBackgroundColor))
+                        }
+                        .background(Color.white)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 4)
+                                .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                        )
+                    }
+                    
+                    VStack(alignment: .leading) {
+                        Text("OpenAI API Key")
+                            .foregroundStyle(.secondary)
+                        VStack {
+                            TextEditor(text: $openaiApiKey)
+                                .font(.body)
+                                .padding(10)
+                                .foregroundColor(.primary)
+                                .background(Color(NSColor.textBackgroundColor))
+                        }
+                        .background(Color.white)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 4)
+                                .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                        )
                     }
                     
                     VStack(alignment: .leading) {
@@ -176,7 +258,7 @@ struct SettingsView: View {
             .toolbar {
                 ToolbarItem(placement: .automatic) {
                     Button("l_close".localized) {
-                        if originalServerAddress != serverAddress {
+                        if originalServerAddress != serverAddress || originalLMStudioAddress != lmStudioAddress || originalClaudeApiKey != claudeApiKey || originalOpenaiApiKey != openaiApiKey {
                             Task {
                                 saveSettings()
                                 try? await Task.sleep(nanoseconds: 100_000_000)
@@ -203,11 +285,17 @@ struct SettingsView: View {
         }
         .onAppear {
             originalServerAddress = serverAddress
+            originalLMStudioAddress = lmStudioAddress
+            originalClaudeApiKey = claudeApiKey
+            originalOpenaiApiKey = openaiApiKey
         }
     }
     
     private func saveSettings() {
         UserDefaults.standard.set(serverAddress, forKey: "serverAddress")
+        UserDefaults.standard.set(lmStudioAddress, forKey: "lmStudioAddress")
+        UserDefaults.standard.set(claudeApiKey, forKey: "claudeApiKey")
+        UserDefaults.standard.set(openaiApiKey, forKey: "openaiApiKey")
         UserDefaults.standard.set(llmInstruction, forKey: "llmInstruction")
         UserDefaults.standard.set(temperature, forKey: "temperature")
         UserDefaults.standard.set(topP, forKey: "topP")
@@ -252,6 +340,33 @@ struct SettingsView: View {
             }
             
             isTestingConnection = false
+        }
+    }
+    
+    private func testLMStudioConnection() {
+        isTestingLMStudioConnection = true
+        lmStudioConnectionTestResult = nil
+        
+        Task {
+            do {
+                let url = URL(string: lmStudioAddress)
+                var request = URLRequest(url: url!)
+                request.httpMethod = "GET"
+                
+                let (data, response) = try await URLSession.shared.data(for: request)
+                
+                if let httpResponse = response as? HTTPURLResponse {
+                    if httpResponse.statusCode == 200 {
+                        lmStudioConnectionTestResult = "l_connection_success".localized
+                    } else {
+                        lmStudioConnectionTestResult = "l_connection_fail_status".localized + " \(httpResponse.statusCode)"
+                    }
+                }
+            } catch {
+                lmStudioConnectionTestResult = "l_connection_fail".localized + ": \(error)"
+            }
+            
+            isTestingLMStudioConnection = false
         }
     }
 } 
