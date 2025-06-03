@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+enum LLMProvider: String, CaseIterable {
+    case ollama = "OLLAMA"
+    case lmstudio = "LMStudio"
+    case claude = "Claude"
+    case openai = "OpenAI"
+}
+
 struct ContentView: View {
     static let shared = ContentView()
     
@@ -14,6 +21,7 @@ struct ContentView: View {
     @State private var showingSettings = false
     @State private var models: [String] = []
     @AppStorage("selectedModel") private var selectedModel: String?
+    @AppStorage("selectedProvider") private var selectedProvider: LLMProvider = .ollama
     @State private var errorMessage: String?
     @State private var showingError = false
     @State private var showCopyAlert = false
@@ -33,7 +41,29 @@ struct ContentView: View {
     
     private var modelSelectionMenu: some View {
         HStack {
-            Text("l_ollama_model".localized)
+            Menu {
+                ForEach(LLMProvider.allCases, id: \.self) { provider in
+                    Button(action: {
+                        selectedProvider = provider
+                        LLMService.shared.refreshForProviderChange()
+                        Task { await loadModels() }
+                    }) {
+                        HStack {
+                            Text(provider.rawValue)
+                            if selectedProvider == provider {
+                                Image(systemName: "checkmark")
+                            }
+                        }
+                    }
+                }
+            } label: {
+                HStack {
+                    Text(selectedProvider.rawValue)
+                    Image(systemName: "chevron.down")
+                }
+            }
+            .frame(width: 200)
+            
             Menu {
                 ForEach(models, id: \.self) { model in
                     Button(action: {
@@ -52,6 +82,8 @@ struct ContentView: View {
                     Image(systemName: "chevron.down")
                 }
             }
+            .frame(width: 300)
+
             Spacer().frame(width: 50)
             HoverImageButton(
                 imageName: "document.on.document"

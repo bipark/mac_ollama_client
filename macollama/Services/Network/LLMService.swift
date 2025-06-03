@@ -1,6 +1,7 @@
 import Foundation
 import AppKit
-import swift_llm_bridge
+import Combine
+//import swift_llm_bridge
 
 @MainActor
 class LLMService: ObservableObject {
@@ -11,35 +12,115 @@ class LLMService: ObservableObject {
     
     private var bridge: LLMBridge
     private var currentTask: Task<Void, Never>?
+    private var cancellables = Set<AnyCancellable>()
     
     var baseURL: String {
-        UserDefaults.standard.string(forKey: "serverAddress") ?? "http://localhost:11434"
+        let provider = LLMProvider(rawValue: UserDefaults.standard.string(forKey: "selectedProvider") ?? "OLLAMA") ?? .ollama
+        switch provider {
+        case .ollama:
+            return UserDefaults.standard.string(forKey: "serverAddress") ?? "http://localhost:11434"
+        case .lmstudio:
+            return UserDefaults.standard.string(forKey: "lmStudioAddress") ?? "http://localhost:1234"
+        case .claude:
+            return "https://api.anthropic.com"
+        case .openai:
+            return "https://api.openai.com"
+        }
+    }
+    
+    private var target: LLMTarget {
+        return Self.getCurrentTarget()
+    }
+    
+    private static func getCurrentTarget() -> LLMTarget {
+        let provider = LLMProvider(rawValue: UserDefaults.standard.string(forKey: "selectedProvider") ?? "OLLAMA") ?? .ollama
+        switch provider {
+        case .ollama:
+            return .ollama
+        case .lmstudio:
+            return .lmstudio
+        case .claude:
+            return .claude
+        case .openai:
+            return .openai
+        }
     }
     
     private init() {
-        // Extract host and port from baseURL directly
-        let baseURLString = UserDefaults.standard.string(forKey: "serverAddress") ?? "http://localhost:11434"
-        let url = URL(string: baseURLString) ?? URL(string: "http://localhost:11434")!
-        let host = url.host ?? "localhost"
-        let port = url.port ?? 11434
+        let currentTarget = Self.getCurrentTarget()
+        let apiKey: String?
         
-        self.bridge = LLMBridge(
-            baseURL: "http://\(host)",
-            port: port,
-            target: .ollama
-        )
+        switch currentTarget {
+        case .claude:
+            apiKey = UserDefaults.standard.string(forKey: "claudeApiKey")
+            self.bridge = LLMBridge(
+                baseURL: "https://api.anthropic.com",
+                port: 443,
+                target: currentTarget,
+                apiKey: apiKey
+            )
+        case .openai:
+            apiKey = UserDefaults.standard.string(forKey: "openaiApiKey")
+            self.bridge = LLMBridge(
+                baseURL: "https://api.openai.com",
+                port: 443,
+                target: currentTarget,
+                apiKey: apiKey
+            )
+        default:
+            apiKey = nil
+            let baseURLString = UserDefaults.standard.string(forKey: "serverAddress") ?? "http://localhost:11434"
+            let url = URL(string: baseURLString) ?? URL(string: "http://localhost:11434")!
+            let host = url.host ?? "localhost"
+            let port = url.port ?? (currentTarget == .lmstudio ? 1234 : 11434)
+            
+            self.bridge = LLMBridge(
+                baseURL: "http://\(host)",
+                port: port,
+                target: currentTarget,
+                apiKey: apiKey
+            )
+        }
     }
     
     func updateConfiguration() {
-        let url = URL(string: baseURL) ?? URL(string: "http://localhost:11434")!
-        let host = url.host ?? "localhost"
-        let port = url.port ?? 11434
+        let currentTarget = target
+        let apiKey: String?
         
-        self.bridge = bridge.createNewSession(
-            baseURL: "http://\(host)",
-            port: port,
-            target: .ollama
-        )
+        switch currentTarget {
+        case .claude:
+            apiKey = UserDefaults.standard.string(forKey: "claudeApiKey")
+            self.bridge = bridge.createNewSession(
+                baseURL: "https://api.anthropic.com",
+                port: 443,
+                target: currentTarget,
+                apiKey: apiKey
+            )
+        case .openai:
+            apiKey = UserDefaults.standard.string(forKey: "openaiApiKey")
+            self.bridge = bridge.createNewSession(
+                baseURL: "https://api.openai.com",
+                port: 443,
+                target: currentTarget,
+                apiKey: apiKey
+            )
+        default:
+            apiKey = nil
+            let url = URL(string: baseURL) ?? URL(string: "http://localhost:11434")!
+            let host = url.host ?? "localhost"
+            let port = url.port ?? (currentTarget == .lmstudio ? 1234 : 11434)
+            
+            self.bridge = bridge.createNewSession(
+                baseURL: "http://\(host)",
+                port: port,
+                target: currentTarget,
+                apiKey: apiKey
+            )
+        }
+    }
+    
+    func refreshForProviderChange() {
+        updateConfiguration()
     }
     
     func generateResponse(prompt: String, image: NSImage? = nil, model: String) async throws -> AsyncThrowingStream<String, Error> {
@@ -48,7 +129,6 @@ class LLMService: ObservableObject {
         isGenerating = true
         currentResponse = ""
         
-        // Convert NSImage to platform image if needed
         var platformImage: NSImage? = nil
         if let image = image {
             platformImage = image
@@ -57,14 +137,11 @@ class LLMService: ObservableObject {
         return AsyncThrowingStream { continuation in
             currentTask = Task {
                 do {
-                    // Get chat history
                     let chatHistory = try await fetchChatHistory()
                     
-                    // Build full prompt with instruction and history
                     let instruction = UserDefaults.standard.string(forKey: "llmInstruction") ?? "You are a helpful assistant."
                     var fullPrompt = instruction + "\n\n"
                     
-                    // Add chat history
                     for chat in chatHistory {
                         fullPrompt += "User: \(chat.question)\n"
                         fullPrompt += "Assistant: \(chat.answer)\n\n"
@@ -73,35 +150,17 @@ class LLMService: ObservableObject {
                     fullPrompt += "User: \(prompt)\n"
                     fullPrompt += "Assistant:"
                     
-                    // Send message using bridge
-                    let response = try await bridge.sendMessage(
+                    let stream = bridge.sendMessageStream(
                         content: fullPrompt,
                         image: platformImage,
                         model: model
                     )
                     
-                    // Stream the response content
-                    let content = response.content
-                    currentResponse = content
-                    
-                    // Simulate streaming by yielding chunks
-                    let words = content.components(separatedBy: " ")
-                    for (index, word) in words.enumerated() {
-                        if index == 0 {
-                            continuation.yield(word)
-                        } else {
-                            continuation.yield(" " + word)
-                        }
-                        
-                        // Small delay to simulate streaming
-                        try? await Task.sleep(nanoseconds: 50_000_000) // 50ms
-                        
-                        if Task.isCancelled {
-                            break
-                        }
+                    for try await chunk in stream {
+                        if Task.isCancelled { break }
+                        continuation.yield(chunk)
                     }
                     
-                    // Add model info at the end
                     continuation.yield("\n\n**[\(model)]**")
                     continuation.finish()
                     
@@ -123,7 +182,9 @@ class LLMService: ObservableObject {
     
     func listModels() async throws -> [String] {
         updateConfiguration()
-        return try await bridge.getAvailableModels()
+        let models = try await bridge.getAvailableModels()
+        print(models)
+        return models
     }
     
     func cancelGeneration() {

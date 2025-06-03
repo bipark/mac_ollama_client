@@ -7,12 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9F08A90E2DED791B00D5EFEC /* swift-llm-bridge in Frameworks */ = {isa = PBXBuildFile; productRef = 9F08A90D2DED791B00D5EFEC /* swift-llm-bridge */; };
+		9F08A95A2DEEE5C900D5EFEC /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 9F08A9592DEEE5C900D5EFEC /* MarkdownUI */; };
 		9F63C8F12D49FB04001C2645 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 9F63C8F02D49FB04001C2645 /* SQLite */; };
 		9F63C9F32D4B61EB001C2645 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 9F63C9F22D4B61EB001C2645 /* MarkdownUI */; };
 		9F63CA502D4B7A46001C2645 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 9F63CA4F2D4B7A46001C2645 /* MarkdownUI */; };
 		9F775B862D4C642000FA1FA6 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 9F775B852D4C642000FA1FA6 /* SQLite */; };
-		9F775B892D4C643900FA1FA6 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 9F775B882D4C643900FA1FA6 /* MarkdownUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,9 +47,8 @@
 				9F775B862D4C642000FA1FA6 /* SQLite in Frameworks */,
 				9F63CA502D4B7A46001C2645 /* MarkdownUI in Frameworks */,
 				9F63C8F12D49FB04001C2645 /* SQLite in Frameworks */,
-				9F08A90E2DED791B00D5EFEC /* swift-llm-bridge in Frameworks */,
 				9F63C9F32D4B61EB001C2645 /* MarkdownUI in Frameworks */,
-				9F775B892D4C643900FA1FA6 /* MarkdownUI in Frameworks */,
+				9F08A95A2DEEE5C900D5EFEC /* MarkdownUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,8 +123,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				9F775B842D4C642000FA1FA6 /* XCRemoteSwiftPackageReference "SQLite.swift" */,
-				9F775B872D4C643900FA1FA6 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
-				9F08A90C2DED791B00D5EFEC /* XCRemoteSwiftPackageReference "swift-llm-bridge" */,
+				9F08A9552DEEE47300D5EFEC /* XCLocalSwiftPackageReference "../swift-llm-bridge" */,
+				9F08A9582DEEE5C900D5EFEC /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9F63C8C42D49F5C6001C2645 /* Products */;
@@ -364,13 +362,20 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		9F08A9552DEEE47300D5EFEC /* XCLocalSwiftPackageReference "../swift-llm-bridge" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../swift-llm-bridge";
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
-		9F08A90C2DED791B00D5EFEC /* XCRemoteSwiftPackageReference "swift-llm-bridge" */ = {
+		9F08A9582DEEE5C900D5EFEC /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/bipark/swift-llm-bridge";
+			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.1;
 			};
 		};
 		9F63C8EF2D49FB04001C2645 /* XCRemoteSwiftPackageReference "SQLite.swift" */ = {
@@ -405,21 +410,13 @@
 				minimumVersion = 0.15.3;
 			};
 		};
-		9F775B872D4C643900FA1FA6 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.4.1;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		9F08A90D2DED791B00D5EFEC /* swift-llm-bridge */ = {
+		9F08A9592DEEE5C900D5EFEC /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 9F08A90C2DED791B00D5EFEC /* XCRemoteSwiftPackageReference "swift-llm-bridge" */;
-			productName = "swift-llm-bridge";
+			package = 9F08A9582DEEE5C900D5EFEC /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
 		};
 		9F63C8F02D49FB04001C2645 /* SQLite */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -440,11 +437,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9F775B842D4C642000FA1FA6 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
 			productName = SQLite;
-		};
-		9F775B882D4C643900FA1FA6 /* MarkdownUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 9F775B872D4C643900FA1FA6 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
-			productName = MarkdownUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
