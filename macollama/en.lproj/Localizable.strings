@@ -56,3 +56,12 @@
 "l_a3" = "Using the image feature is simple:\n1. Click the image button next to the input box\n2. Select an image to upload\n3. Enter your question\n4. Click send\n\nI'll analyze the image content and answer your question.";
 "l_set_url" = "Go to Settings and enter the correct server address";
 "l_stop" = "Stop";
+"l_test_connection" = "Check server connection status";
+"l_connection_success" = "Server connection success";
+"l_connection_fail_status" = "Server connection failure";
+"l_connection_fail" = "Server connection failure";
+"l_ai_model_instruction" = "Instructs the AI ​​model on how to behave at a basic level.";
+"l_temperature_desc" = "Higher values ​​produce more diverse and creative responses. (0.1~2.0)";
+"l_top_p_desc" = "When selecting the next token, only select from the top P% of the probability distribution. (0.1~1.0)";
+"l_top_k_desc" = "When selecting the next token, only select from the K most probable tokens.";
+"l_load_file" = "Select file (image/PDF/text/markdown)";

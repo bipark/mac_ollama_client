@@ -59,7 +59,7 @@
 "l_stop" = "중지";
 "l_test_connection" = "서버연결 상태 확인";
 "l_connection_success" = "서버 연결 성공";
-"l_connection_fail_status" = "서버 연결 실패 (상태 코드:";
+"l_connection_fail_status" = "서버 연결 실패";
 "l_connection_fail" = "서버 연결 실패";
 "l_ai_model_instruction" = "AI 모델에게 기본적인 행동 방식을 지시하는 내용입니다.";
 "l_temperature_desc" = "값이 높을수록 다양하고 창의적인 응답을 생성합니다. (0.1~2.0)";

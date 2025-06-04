@@ -62,7 +62,7 @@ struct ContentView: View {
                     Image(systemName: "chevron.down")
                 }
             }
-            .frame(width: 200)
+            .frame(width: 160)
             
             Menu {
                 ForEach(models, id: \.self) { model in

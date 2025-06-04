@@ -56,3 +56,12 @@
 "l_a3" = "使用图片功能很简单：\n1. 点击输入框旁边的图片按钮\n2. 选择要上传的图片\n3. 输入你的问题\n4. 点击发送\n\n我会分析图片内容并回答你的问题。";
 "l_set_url" = "前往设置并输入正确的服务器地址";
 "l_stop" = "停止";
+"l_test_connection" = "检查服务器连接状态";
+"l_connection_success" = "服务器连接成功";
+"l_connection_fail_status" = "服务器连接失败";
+"l_connection_fail" = "服务器连接失败";
+"l_ai_model_instruction" = "这是对AI模型进行基本行为指导的内容。";
+"l_temp_desc" = "更高的值产生更加多样化和创造性的反应 (0.1~2.0)";
+"l_top_p_desc" = "选择下一个token时，只选择概率分布前P%以内的token（0.1~1.0）";
+"l_top_k_desc" = "选择下一个标记时，仅从 K 个最可能的标记中进行选择。";
+"l_load_file" = "选择文件（图像/PDF/文本/markdown）";

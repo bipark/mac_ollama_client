@@ -325,6 +325,7 @@ struct SettingsView: View {
                 let url = URL(string: serverAddress)
                 var request = URLRequest(url: url!)
                 request.httpMethod = "GET"
+                request.timeoutInterval = 10.0
                 
                 let (data, response) = try await URLSession.shared.data(for: request)
                 
@@ -332,11 +333,11 @@ struct SettingsView: View {
                     if httpResponse.statusCode == 200 {
                         connectionTestResult = "l_connection_success".localized
                     } else {
-                        connectionTestResult = "l_connection_fail_status".localized + " \(httpResponse.statusCode)"
+                        connectionTestResult = "l_connection_fail_status".localized
                     }
                 }
             } catch {
-                connectionTestResult = "l_connection_fail".localized + ": \(error)"
+                connectionTestResult = "l_connection_fail".localized
             }
             
             isTestingConnection = false
@@ -352,6 +353,7 @@ struct SettingsView: View {
                 let url = URL(string: lmStudioAddress)
                 var request = URLRequest(url: url!)
                 request.httpMethod = "GET"
+                request.timeoutInterval = 10.0
                 
                 let (data, response) = try await URLSession.shared.data(for: request)
                 
@@ -359,11 +361,11 @@ struct SettingsView: View {
                     if httpResponse.statusCode == 200 {
                         lmStudioConnectionTestResult = "l_connection_success".localized
                     } else {
-                        lmStudioConnectionTestResult = "l_connection_fail_status".localized + " \(httpResponse.statusCode)"
+                        lmStudioConnectionTestResult = "l_connection_fail_status".localized
                     }
                 }
             } catch {
-                lmStudioConnectionTestResult = "l_connection_fail".localized + ": \(error)"
+                lmStudioConnectionTestResult = "l_connection_fail".localized
             }
             
             isTestingLMStudioConnection = false
