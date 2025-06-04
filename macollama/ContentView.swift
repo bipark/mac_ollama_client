@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum LLMProvider: String, CaseIterable {
-    case ollama = "OLLAMA"
+    case ollama = "Ollma"
     case lmstudio = "LMStudio"
     case claude = "Claude"
     case openai = "OpenAI"
