@@ -130,11 +130,12 @@ class LLMService: ObservableObject {
         currentResponse = ""
         
         var platformImage: NSImage? = nil
+        var selectedModel = model
+        
         if let image = image {
-            // OpenAI의 경우 gpt-4-vision-preview 모델로 강제 변경
             if target == .openai {
                 platformImage = image
-                model = "gpt-4-vision-preview"
+                selectedModel = "gpt-4o"
             } else {
                 platformImage = image
             }
@@ -159,7 +160,7 @@ class LLMService: ObservableObject {
                     let stream = bridge.sendMessageStream(
                         content: fullPrompt,
                         image: platformImage,
-                        model: model
+                        model: selectedModel
                     )
                     
                     for try await chunk in stream {
@@ -167,7 +168,7 @@ class LLMService: ObservableObject {
                         continuation.yield(chunk)
                     }
                     
-                    continuation.yield("\n\n**[\(model)]**")
+                    continuation.yield("\n\n**[\(selectedModel)]**")
                     continuation.finish()
                     
                 } catch {

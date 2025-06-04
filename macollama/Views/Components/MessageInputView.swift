@@ -152,7 +152,7 @@ struct MessageInputView: View {
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
         panel.canChooseFiles = true
-        panel.message = "파일을 선택해주세요"
+        panel.message = "Select a file"
         
         var allowedTypes = [
             UTType.image,
@@ -166,7 +166,7 @@ struct MessageInputView: View {
         }
         
         panel.allowedContentTypes = allowedTypes
-        panel.allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "tiff", "webp", "md", "markdown", "txt"]
+        panel.allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "tiff", "webp", "pdf", "md", "markdown", "txt"]
         
         panel.begin { response in
             if response == .OK, let url = panel.url {
@@ -177,10 +177,6 @@ struct MessageInputView: View {
                     case "jpg", "jpeg", "png", "gif", "bmp", "tiff", "webp":
                         if let image = NSImage(contentsOf: url) {
                             self.viewModel.selectedImage = image
-                            let imageMarker = "[이미지]"
-                            let text = self.viewModel.messageText
-                            let index = text.index(text.startIndex, offsetBy: max(0, min(self.cursorPosition, text.count)))
-                            self.viewModel.messageText = text[..<index] + imageMarker + text[index...]
                         }
                     case "pdf":
                         let extractedText = self.extractTextFromPDF(pdfURL: url)
