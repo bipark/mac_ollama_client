@@ -1,7 +1,7 @@
 import Foundation
 import AppKit
 import Combine
-//import swift_llm_bridge
+import swift_llm_bridge
 
 @MainActor
 class LLMService: ObservableObject {
@@ -131,7 +131,13 @@ class LLMService: ObservableObject {
         
         var platformImage: NSImage? = nil
         if let image = image {
-            platformImage = image
+            // OpenAI의 경우 gpt-4-vision-preview 모델로 강제 변경
+            if target == .openai {
+                platformImage = image
+                model = "gpt-4-vision-preview"
+            } else {
+                platformImage = image
+            }
         }
         
         return AsyncThrowingStream { continuation in

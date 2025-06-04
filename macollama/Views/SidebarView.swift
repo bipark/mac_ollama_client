@@ -155,5 +155,6 @@ struct SidebarView: View {
                 }
             }
         }
+        .frame(minWidth: 260)
     }
 }

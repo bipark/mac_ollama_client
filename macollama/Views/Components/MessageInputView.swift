@@ -1,90 +1,136 @@
 import SwiftUI
 import PDFKit
 import AppKit
+import UniformTypeIdentifiers
+
+struct ImagePreviewView: View {
+    let image: NSImage
+    let onDelete: () -> Void
+    
+    var body: some View {
+        HStack {
+            Image(nsImage: image)
+                .resizable()
+                .scaledToFit()
+                .frame(height: 60)
+                .cornerRadius(8)
+            
+            Button(action: onDelete) {
+                Image(systemName: "xmark.circle.fill")
+                    .foregroundColor(.gray)
+            }
+            .buttonStyle(.plain)
+            
+            Spacer()
+        }
+        .padding(.horizontal)
+        .padding(.bottom, 8)
+    }
+}
 
 struct MessageInputView: View {
     @ObservedObject var viewModel: ChatViewModel
     @Binding var selectedModel: String?
     @Binding var isGenerating: Bool
     @FocusState private var isTextFieldFocused: Bool
+    @State private var cursorPosition: Int = 0
     
     let onSendMessage: () -> Void
     let onCancelGeneration: () -> Void
     
+    private var messageEditor: some View {
+        TextEditor(text: $viewModel.messageText)
+            .frame(height: 60)
+            .padding(8)
+            .cornerRadius(8)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color(NSColor.textBackgroundColor))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.gray.opacity(0.5))
+                    )
+            )
+            .foregroundColor(.primary)
+            .focused($isTextFieldFocused)
+            .background(
+                GeometryReader { _ in
+                    Color.clear.preference(
+                        key: TextViewKey.self,
+                        value: findTextView(in: NSApplication.shared.keyWindow?.contentView)
+                    )
+                }
+            )
+            .onPreferenceChange(TextViewKey.self) { textView in
+                if let textView = textView {
+                    cursorPosition = textView.selectedRange().location
+                }
+            }
+            .onKeyPress(.return) {
+                let event = NSApplication.shared.currentEvent
+                let shiftPressed = event?.modifierFlags.contains(.shift) ?? false
+                
+                if shiftPressed {
+                    return .ignored
+                } else {
+                    if !viewModel.messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        onSendMessage()
+                    }
+                    return .handled
+                }
+            }
+    }
+    
+    private func findTextView(in view: NSView?) -> NSTextView? {
+        if let textView = view as? NSTextView {
+            return textView
+        }
+        
+        for subview in view?.subviews ?? [] {
+            if let textView = findTextView(in: subview) {
+                return textView
+            }
+        }
+        
+        return nil
+    }
+    
+    private var actionButtons: some View {
+        VStack(spacing: 8) {
+            HoverImageButton(
+                imageName: isGenerating ? "stop.circle" : "arrow.up.circle",
+                size: 22,
+                btnColor: .blue
+            ) {
+                if isGenerating {
+                    onCancelGeneration()
+                } else {
+                    onSendMessage()
+                }
+            }
+
+            HoverImageButton(
+                imageName: "doc.badge.plus", 
+                size: 22, 
+                btnColor: .blue
+            ) {
+                selectFile()
+            }
+        }
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
-            // Selected image preview
             if let image = viewModel.selectedImage {
-                HStack {
-                    Image(nsImage: image)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 60)
-                        .cornerRadius(8)
-                    
-                    Button(action: { viewModel.selectedImage = nil }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.gray)
-                    }
-                    .buttonStyle(.plain)
-                    
-                    Spacer()
+                ImagePreviewView(image: image) {
+                    viewModel.selectedImage = nil
+                    viewModel.messageText = viewModel.messageText.replacingOccurrences(of: "[이미지]", with: "")
                 }
-                .padding(.horizontal)
-                .padding(.bottom, 8)
             }
             
-            // Message input area
             HStack(spacing: 8) {
-                TextEditor(text: $viewModel.messageText)
-                    .frame(height: 60)
-                    .padding(8)
-                    .cornerRadius(8)
-                    .background(
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(Color(NSColor.textBackgroundColor))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.gray.opacity(0.5))
-                            )
-                    )
-                    .foregroundColor(.primary)
-                    .focused($isTextFieldFocused)
-                    .onKeyPress(.return) {
-                        let event = NSApplication.shared.currentEvent
-                        let shiftPressed = event?.modifierFlags.contains(.shift) ?? false
-                        
-                        if shiftPressed {
-                            return .ignored
-                        } else {
-                            if !viewModel.messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                                onSendMessage()
-                            }
-                            return .handled
-                        }
-                    }
-                
-                VStack(spacing: 8) {
-                    HoverImageButton(
-                        imageName: isGenerating ? "stop.circle" : "arrow.up.circle",
-                        size: 22,
-                        btnColor: .blue
-                    ) {
-                        if isGenerating {
-                            onCancelGeneration()
-                        } else {
-                            onSendMessage()
-                        }
-                    }
-
-                    HoverImageButton(
-                        imageName: "doc.badge.plus", 
-                        size: 22, 
-                        btnColor: .blue
-                    ) {
-                        selectFile()
-                    }
-                }
+                messageEditor
+                actionButtons
             }
             .padding(.vertical, 12)
             .padding(.horizontal)
@@ -106,8 +152,21 @@ struct MessageInputView: View {
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
         panel.canChooseFiles = true
-        panel.allowedContentTypes = [.image, .pdf, .plainText]
-        panel.allowedFileTypes = ["md", "markdown"]
+        panel.message = "파일을 선택해주세요"
+        
+        var allowedTypes = [
+            UTType.image,
+            UTType.pdf,
+            UTType.text,
+            UTType.plainText
+        ]
+        
+        if let markdownType = UTType("public.markdown") {
+            allowedTypes.append(markdownType)
+        }
+        
+        panel.allowedContentTypes = allowedTypes
+        panel.allowedFileTypes = ["jpg", "jpeg", "png", "gif", "bmp", "tiff", "webp", "md", "markdown", "txt"]
         
         panel.begin { response in
             if response == .OK, let url = panel.url {
@@ -118,6 +177,10 @@ struct MessageInputView: View {
                     case "jpg", "jpeg", "png", "gif", "bmp", "tiff", "webp":
                         if let image = NSImage(contentsOf: url) {
                             self.viewModel.selectedImage = image
+                            let imageMarker = "[이미지]"
+                            let text = self.viewModel.messageText
+                            let index = text.index(text.startIndex, offsetBy: max(0, min(self.cursorPosition, text.count)))
+                            self.viewModel.messageText = text[..<index] + imageMarker + text[index...]
                         }
                     case "pdf":
                         let extractedText = self.extractTextFromPDF(pdfURL: url)
@@ -162,5 +225,13 @@ struct MessageInputView: View {
         }
         
         return fullText
+    }
+}
+
+struct TextViewKey: PreferenceKey {
+    static var defaultValue: NSTextView? = nil
+    
+    static func reduce(value: inout NSTextView?, nextValue: () -> NSTextView?) {
+        value = nextValue()
     }
 } 

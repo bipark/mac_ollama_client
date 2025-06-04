@@ -1,5 +1,5 @@
 {
-  "originHash" : "12d328497fecc91f9e854abf5ae5cf9cbb4cca0d4331eb3bea15567bfb3af35e",
+  "originHash" : "aa446da2ededea193458e1dad88a46d834a8686795c9c4f5cfe758f5f59df7a0",
   "pins" : [
     {
       "identity" : "networkimage",
@@ -26,6 +26,15 @@
       "state" : {
         "revision" : "3ccff77b2dc5b96b77db3da0d68d28068593fa53",
         "version" : "0.5.0"
+      }
+    },
+    {
+      "identity" : "swift-llm-bridge",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/bipark/swift-llm-bridge",
+      "state" : {
+        "branch" : "main",
+        "revision" : "c5563ce68b48e9411162bfa33d3dc65b662545d6"
       }
     },
     {

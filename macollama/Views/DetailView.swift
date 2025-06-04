@@ -5,9 +5,9 @@ struct DetailView: View {
     @Binding var selectedModel: String?
     @StateObject private var viewModel = ChatViewModel.shared
     @Namespace private var bottomID
-    @State private var isGenerating = false  // 통신 상태 추적
-    @State private var responseStartTime: Date? // 응답 시작 시간 추가
-    @State private var tokenCount: Int = 0 // 토큰 카운트 추가
+    @State private var isGenerating = false  
+    @State private var responseStartTime: Date? 
+    @State private var tokenCount: Int = 0 
     
     var body: some View {
         VStack(spacing: 0) {
@@ -67,10 +67,10 @@ struct DetailView: View {
         
         viewModel.messageText = ""
         viewModel.selectedImage = nil
-        isGenerating = true  // 통신 시작
+        isGenerating = true  
         
-        responseStartTime = Date() // 응답 시작 시간 기록
-        tokenCount = 0 // 토큰 카운트 초기화
+        responseStartTime = Date() 
+        tokenCount = 0 
         
         let userMessage = ChatMessage(
             id: viewModel.messages.count * 2,

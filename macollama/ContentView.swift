@@ -84,7 +84,7 @@ struct ContentView: View {
             }
             .frame(width: 300)
 
-            Spacer().frame(width: 50)
+            Spacer()
             HoverImageButton(
                 imageName: "document.on.document"
             ) {
