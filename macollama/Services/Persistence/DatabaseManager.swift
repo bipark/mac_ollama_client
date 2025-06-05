@@ -23,7 +23,6 @@ class DatabaseManager {
         let fileURL = try! FileManager.default
             .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
             .appendingPathComponent("macollama.sqlite")
-        print(fileURL)
         
         if sqlite3_open(fileURL.path, &db) == SQLITE_OK {
             createTable()
@@ -54,7 +53,7 @@ class DatabaseManager {
         
         sqlite3_finalize(statement)
         
-        insertInitialDataIfNeeded()
+        //insertInitialDataIfNeeded()
     }
     
     private func insertInitialDataIfNeeded() {
