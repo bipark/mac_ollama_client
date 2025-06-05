@@ -189,8 +189,7 @@ class LLMService: ObservableObject {
     
     func listModels() async throws -> [String] {
         updateConfiguration()
-        let models = try await bridge.getAvailableModels()
-        print(models)
+        let models = await bridge.getAvailableModels()
         return models
     }
     

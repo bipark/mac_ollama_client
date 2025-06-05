@@ -37,6 +37,7 @@
 "l_search" = "Search";
 "l_ollama_model" = "Ollama Model";
 "l_refresh" = "Refresh";
+"l_loading" = "Loading...";
 "l_select_model" = "Select Model";
 "l_copy_all" = "Copy All";
 "l_model_load_fail" = "Olama Server Settings";

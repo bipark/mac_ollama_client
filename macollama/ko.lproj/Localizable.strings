@@ -38,6 +38,7 @@
 "l_search" = "검색";
 "l_ollama_model" = "올라마 모델 ";
 "l_refresh" = "새로고침";
+"l_loading" = "로딩 중...";
 "l_select_model" = "모델 선택";
 "l_copy_all" = "전체복사";
 "l_model_load_fail" = "올라마 서버 설정";

@@ -32,6 +32,7 @@ struct MessageInputView: View {
     @ObservedObject var viewModel: ChatViewModel
     @Binding var selectedModel: String?
     @Binding var isGenerating: Bool
+    @Binding var isLoadingModels: Bool
     @FocusState private var isTextFieldFocused: Bool
     @State private var cursorPosition: Int = 0
     
@@ -51,7 +52,8 @@ struct MessageInputView: View {
                             .stroke(Color.gray.opacity(0.5))
                     )
             )
-            .foregroundColor(.primary)
+            .foregroundColor(isLoadingModels ? .gray : .primary)
+            .disabled(isLoadingModels)
             .focused($isTextFieldFocused)
             .background(
                 GeometryReader { _ in
@@ -108,6 +110,7 @@ struct MessageInputView: View {
                     onSendMessage()
                 }
             }
+            .disabled(isLoadingModels)
 
             HoverImageButton(
                 imageName: "doc.badge.plus", 
@@ -116,6 +119,7 @@ struct MessageInputView: View {
             ) {
                 selectFile()
             }
+            .disabled(isLoadingModels)
         }
     }
     

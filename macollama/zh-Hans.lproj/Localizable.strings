@@ -37,6 +37,7 @@
 "l_search" = "搜索";
 "l_ollama_model" = "Ollama 模型";
 "l_refresh" = "刷新";
+"l_loading" = "加载中...";
 "l_select_model" = "选择模型";
 "l_copy_all" = "复制全部";
 "l_model_load_fail" = "Olama 服务器设置";

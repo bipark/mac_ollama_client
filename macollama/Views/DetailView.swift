@@ -3,6 +3,7 @@ import MarkdownUI
 
 struct DetailView: View {
     @Binding var selectedModel: String?
+    @Binding var isLoadingModels: Bool
     @StateObject private var viewModel = ChatViewModel.shared
     @Namespace private var bottomID
     @State private var isGenerating = false  
@@ -43,6 +44,7 @@ struct DetailView: View {
                 viewModel: viewModel,
                 selectedModel: $selectedModel,
                 isGenerating: $isGenerating,
+                isLoadingModels: $isLoadingModels,
                 onSendMessage: sendMessage,
                 onCancelGeneration: {
                     LLMService.shared.cancelGeneration()

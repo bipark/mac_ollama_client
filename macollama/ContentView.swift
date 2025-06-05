@@ -20,6 +20,7 @@ struct ContentView: View {
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
     @State private var showingSettings = false
     @State private var models: [String] = []
+    @State private var isLoadingModels = false
     @AppStorage("selectedModel") private var selectedModel: String?
     @AppStorage("selectedProvider") private var selectedProvider: LLMProvider = .ollama
     @State private var errorMessage: String?
@@ -39,60 +40,6 @@ struct ContentView: View {
         }
     }
     
-    private var modelSelectionMenu: some View {
-        HStack {
-            Menu {
-                ForEach(LLMProvider.allCases, id: \.self) { provider in
-                    Button(action: {
-                        selectedProvider = provider
-                        LLMService.shared.refreshForProviderChange()
-                        Task { await loadModels() }
-                    }) {
-                        HStack {
-                            Text(provider.rawValue)
-                            if selectedProvider == provider {
-                                Image(systemName: "checkmark")
-                            }
-                        }
-                    }
-                }
-            } label: {
-                HStack {
-                    Text(selectedProvider.rawValue)
-                    Image(systemName: "chevron.down")
-                }
-            }
-            .frame(width: 160)
-            
-            Menu {
-                ForEach(models, id: \.self) { model in
-                    Button(action: {
-                        selectedModel = model
-                    }) {
-                        Text(model)
-                    }
-                }
-                Divider()
-                Button(action: { Task { await loadModels() } }) {
-                    Label("l_refresh".localized, systemImage: "arrow.clockwise")
-                }
-            } label: {
-                HStack {
-                    Text(selectedModel ?? "l_select_model".localized)
-                    Image(systemName: "chevron.down")
-                }
-            }
-            .frame(width: 300)
-
-            Spacer()
-            HoverImageButton(
-                imageName: "document.on.document"
-            ) {
-                copyAllMessages()
-            }
-        }
-    }
-    
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             SidebarView()
@@ -104,11 +51,19 @@ struct ContentView: View {
                 .navigationTitle("")
                 .toolbar {
                     ToolbarItem(placement: .navigation) {
-                        modelSelectionMenu
+                        ModelSelectionMenu(
+                            selectedModel: $selectedModel,
+                            selectedProvider: $selectedProvider,
+                            models: $models,
+                            isLoadingModels: $isLoadingModels,
+                            onProviderChange: { await loadModels() },
+                            onModelRefresh: { await loadModels() },
+                            onCopyAllMessages: { copyAllMessages() }
+                        )
                     }
                 }
         } detail: {
-            DetailView(selectedModel: $selectedModel)
+            DetailView(selectedModel: $selectedModel, isLoadingModels: $isLoadingModels)
         }
         .sheet(isPresented: $showingSettings) {
             SettingsView(isPresented: $showingSettings)
@@ -146,6 +101,12 @@ struct ContentView: View {
     
     @MainActor
     func loadModels() async {
+        isLoadingModels = true
+        
+        models = []
+        selectedModel = nil
+        UserDefaults.standard.removeObject(forKey: "selectedModel")
+        
         do {
             let newModels = try await LLMService.shared.listModels()
             models = newModels
@@ -155,17 +116,16 @@ struct ContentView: View {
             } else if selectedModel == nil || !newModels.contains(selectedModel!) {
                 selectedModel = newModels.first
             }
-        } catch OllamaError.invalidURL {
-            await showError("l_error1".localized)
-        } catch OllamaError.requestFailed {
-            await showError("l_error2".localized)
-        } catch OllamaError.invalidResponse {
-            await showError("l_error3".localized)
-        } catch OllamaError.decodingError {
-            await showError("l_error4".localized)
         } catch {
-            await showError("\(error.localizedDescription)")
+            DispatchQueue.main.async {
+                self.models = []
+                self.selectedModel = nil
+                UserDefaults.standard.removeObject(forKey: "selectedModel")
+            }
+            await showError("l_error2".localized)
         }
+        
+        isLoadingModels = false
     }
     
     @MainActor
