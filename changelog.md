@@ -25,3 +25,20 @@
   - Text files: Direct content reading and inclusion in prompts
   - Images: Maintained existing image processing functionality
 - **UI Improvements**: Enhanced settings interface with parameter descriptions and real-time value display
+
+## 2025/06/05 - v1.2.0
+
+- **Multi-platform LLM Support**:
+  - Added LM Studio integration with local server (http://localhost:1234)
+  - Added Claude API support with API key configuration
+  - Added OpenAI API support with API key configuration
+- **Selective Service Display**:
+  - Added configurable visibility for each LLM service in model selection menu
+  - Set default enabled state for Ollama service
+  - Added individual toggles for LM Studio, Claude, and OpenAI services
+- **Other Changes**:
+  - Renamed app from "Ollama Client" to "Multi LLM Client"
+  - Updated documentation in multiple languages
+  - Fixed model selection handling for multiple services
+  - Improved service availability checks and error handling
+  - Fixed settings persistence for service visibility toggles
