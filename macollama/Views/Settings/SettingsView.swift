@@ -10,6 +10,10 @@ struct SettingsView: View {
     @State private var originalClaudeApiKey: String = UserDefaults.standard.string(forKey: "claudeApiKey") ?? ""
     @State private var openaiApiKey: String = UserDefaults.standard.string(forKey: "openaiApiKey") ?? ""
     @State private var originalOpenaiApiKey: String = UserDefaults.standard.string(forKey: "openaiApiKey") ?? ""
+    @AppStorage("showOllama") private var showOllama: Bool = true
+    @AppStorage("showLMStudio") private var showLMStudio: Bool = false
+    @AppStorage("showClaude") private var showClaude: Bool = false
+    @AppStorage("showOpenAI") private var showOpenAI: Bool = false
     @State private var llmInstruction: String = UserDefaults.standard.string(forKey: "llmInstruction") ?? "You are a helpful assistant."
     @State private var temperature: Double = UserDefaults.standard.double(forKey: "temperature")
     @State private var topP: Double = UserDefaults.standard.double(forKey: "topP") != 0 ? UserDefaults.standard.double(forKey: "topP") : 0.9
@@ -27,10 +31,19 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section {
+                Section(header: Text("LLM Servers")) {
                     VStack(alignment: .leading) {
-                        Text("l_ollama_sddress".localized)
-                            .foregroundStyle(.secondary)
+                        HStack {
+                            Toggle(isOn: $showOllama) {
+                                Text("l_ollama_sddress".localized)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .onChange(of: showOllama) { _ in
+                                Task {
+                                    await ContentView.shared.loadModels()
+                                }
+                            }
+                        }
                         HStack {
                             VStack {
                                 TextEditor(text: $serverAddress)
@@ -69,8 +82,17 @@ struct SettingsView: View {
                     }
                     
                     VStack(alignment: .leading) {
-                        Text("LM Studio Address")
-                            .foregroundStyle(.secondary)
+                        HStack {
+                            Toggle(isOn: $showLMStudio) {
+                                Text("LMStudio".localized)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .onChange(of: showLMStudio) { _ in
+                                Task {
+                                    await ContentView.shared.loadModels()
+                                }
+                            }
+                        }
                         HStack {
                             VStack {
                                 TextEditor(text: $lmStudioAddress)
@@ -109,8 +131,17 @@ struct SettingsView: View {
                     }
                     
                     VStack(alignment: .leading) {
-                        Text("Claude API Key")
-                            .foregroundStyle(.secondary)
+                        HStack {
+                            Toggle(isOn: $showClaude) {
+                                Text("Claude API Key")
+                                    .foregroundStyle(.secondary)
+                            }
+                            .onChange(of: showClaude) { _ in
+                                Task {
+                                    await ContentView.shared.loadModels()
+                                }
+                            }
+                        }
                         VStack {
                             TextEditor(text: $claudeApiKey)
                                 .font(.body)
@@ -126,8 +157,17 @@ struct SettingsView: View {
                     }
                     
                     VStack(alignment: .leading) {
-                        Text("OpenAI API Key")
-                            .foregroundStyle(.secondary)
+                        HStack {
+                            Toggle(isOn: $showOpenAI) {
+                                Text("OpenAI API Key")
+                                    .foregroundStyle(.secondary)
+                            }
+                            .onChange(of: showOpenAI) { _ in
+                                Task {
+                                    await ContentView.shared.loadModels()
+                                }
+                            }
+                        }
                         VStack {
                             TextEditor(text: $openaiApiKey)
                                 .font(.body)
@@ -141,6 +181,9 @@ struct SettingsView: View {
                                 .stroke(Color.gray.opacity(0.2), lineWidth: 1)
                         )
                     }
+                }
+
+                Section(header: Text("LLM Settings")) {
                     
                     VStack(alignment: .leading) {
                         Text("l_llm_inst".localized)

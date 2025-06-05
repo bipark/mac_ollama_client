@@ -12,6 +12,21 @@ enum LLMProvider: String, CaseIterable {
     case lmstudio = "LMStudio"
     case claude = "Claude"
     case openai = "OpenAI"
+    
+    static var availableProviders: [LLMProvider] {
+        Self.allCases.filter { provider in
+            switch provider {
+            case .ollama:
+                return UserDefaults.standard.bool(forKey: "showOllama")
+            case .lmstudio:
+                return UserDefaults.standard.bool(forKey: "showLMStudio")
+            case .claude:
+                return UserDefaults.standard.bool(forKey: "showClaude")
+            case .openai:
+                return UserDefaults.standard.bool(forKey: "showOpenAI")
+            }
+        }
+    }
 }
 
 struct ContentView: View {
@@ -106,6 +121,11 @@ struct ContentView: View {
         models = []
         selectedModel = nil
         UserDefaults.standard.removeObject(forKey: "selectedModel")
+        
+        // Check if current provider is available
+        if !LLMProvider.availableProviders.contains(selectedProvider) {
+            selectedProvider = LLMProvider.availableProviders.first ?? .ollama
+        }
         
         do {
             let newModels = try await LLMService.shared.listModels()

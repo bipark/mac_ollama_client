@@ -9,10 +9,25 @@ struct ModelSelectionMenu: View {
     let onModelRefresh: () async -> Void
     let onCopyAllMessages: () -> Void
     
+    private var availableProviders: [LLMProvider] {
+        LLMProvider.allCases.filter { provider in
+            switch provider {
+            case .ollama:
+                return UserDefaults.standard.bool(forKey: "showOllama")
+            case .lmstudio:
+                return UserDefaults.standard.bool(forKey: "showLMStudio")
+            case .claude:
+                return UserDefaults.standard.bool(forKey: "showClaude")
+            case .openai:
+                return UserDefaults.standard.bool(forKey: "showOpenAI")
+            }
+        }
+    }
+    
     var body: some View {
         HStack {
             Menu {
-                ForEach(LLMProvider.allCases, id: \.self) { provider in
+                ForEach(availableProviders, id: \.self) { provider in
                     Button(action: {
                         selectedProvider = provider
                         LLMService.shared.refreshForProviderChange()
