@@ -9,8 +9,10 @@ struct ModelSelectionMenu: View {
     let onModelRefresh: () async -> Void
     let onCopyAllMessages: () -> Void
     
-    private var availableProviders: [LLMProvider] {
-        LLMProvider.allCases.filter { provider in
+    @State private var availableProviders: [LLMProvider] = []
+    
+    private func updateAvailableProviders() {
+        availableProviders = LLMProvider.allCases.filter { provider in
             switch provider {
             case .ollama:
                 return UserDefaults.standard.bool(forKey: "showOllama")
@@ -20,6 +22,16 @@ struct ModelSelectionMenu: View {
                 return UserDefaults.standard.bool(forKey: "showClaude")
             case .openai:
                 return UserDefaults.standard.bool(forKey: "showOpenAI")
+            }
+        }
+        
+        // 현재 선택된 provider가 available하지 않으면 첫 번째 available provider로 변경
+        if !availableProviders.contains(selectedProvider),
+           let firstProvider = availableProviders.first {
+            selectedProvider = firstProvider
+            LLMService.shared.refreshForProviderChange()
+            Task {
+                await onProviderChange()
             }
         }
     }
@@ -89,6 +101,12 @@ struct ModelSelectionMenu: View {
             ) {
                 onCopyAllMessages()
             }
+        }
+        .onAppear {
+            updateAvailableProviders()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)) { _ in
+            updateAvailableProviders()
         }
     }
 } 

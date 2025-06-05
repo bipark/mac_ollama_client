@@ -150,8 +150,11 @@ struct SettingsView: View {
                                 .foregroundColor(.primary)
                                 .background(Color(NSColor.textBackgroundColor))
                                 .onChange(of: claudeApiKey) { newValue in
-                                    if newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                                    let trimmedValue = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
+                                    if trimmedValue.isEmpty {
                                         showClaude = false
+                                    } else {
+                                        showClaude = true
                                     }
                                 }
                         }
@@ -182,8 +185,11 @@ struct SettingsView: View {
                                 .foregroundColor(.primary)
                                 .background(Color(NSColor.textBackgroundColor))
                                 .onChange(of: openaiApiKey) { newValue in
-                                    if newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                                    let trimmedValue = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
+                                    if trimmedValue.isEmpty {
                                         showOpenAI = false
+                                    } else {
+                                        showOpenAI = true
                                     }
                                 }
                         }
@@ -311,18 +317,12 @@ struct SettingsView: View {
             .formStyle(.grouped)
             .navigationTitle("l_settings".localized)
             .toolbar {
-                ToolbarItem(placement: .automatic) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button("l_close".localized) {
-                        if originalServerAddress != serverAddress || originalLMStudioAddress != lmStudioAddress || originalClaudeApiKey != claudeApiKey || originalOpenaiApiKey != openaiApiKey {
-                            Task {
-                                saveSettings()
-                                try? await Task.sleep(nanoseconds: 100_000_000)
-                                await ContentView.shared.loadModels()
-                                isPresented = false
-                            }
-                        } else {
-                            saveSettings()
-                            isPresented = false
+                        saveSettings()
+                        isPresented = false
+                        Task {
+                            await ContentView.shared.loadModels()
                         }
                     }
                 }
