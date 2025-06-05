@@ -1,7 +1,7 @@
 import Foundation
 import AppKit
 import Combine
-import swift_llm_bridge
+//import swift_llm_bridge
 
 @MainActor
 class LLMService: ObservableObject {

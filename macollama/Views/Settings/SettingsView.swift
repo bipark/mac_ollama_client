@@ -35,7 +35,7 @@ struct SettingsView: View {
                     VStack(alignment: .leading) {
                         HStack {
                             Toggle(isOn: $showOllama) {
-                                Text("l_ollama_sddress".localized)
+                                Text("Ollama Server")
                                     .foregroundStyle(.secondary)
                             }
                             .onChange(of: showOllama) { _ in
@@ -141,6 +141,7 @@ struct SettingsView: View {
                                     await ContentView.shared.loadModels()
                                 }
                             }
+                            .disabled(claudeApiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                         }
                         VStack {
                             TextEditor(text: $claudeApiKey)
@@ -148,6 +149,11 @@ struct SettingsView: View {
                                 .padding(10)
                                 .foregroundColor(.primary)
                                 .background(Color(NSColor.textBackgroundColor))
+                                .onChange(of: claudeApiKey) { newValue in
+                                    if newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                                        showClaude = false
+                                    }
+                                }
                         }
                         .background(Color.white)
                         .overlay(
@@ -167,6 +173,7 @@ struct SettingsView: View {
                                     await ContentView.shared.loadModels()
                                 }
                             }
+                            .disabled(openaiApiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                         }
                         VStack {
                             TextEditor(text: $openaiApiKey)
@@ -174,6 +181,11 @@ struct SettingsView: View {
                                 .padding(10)
                                 .foregroundColor(.primary)
                                 .background(Color(NSColor.textBackgroundColor))
+                                .onChange(of: openaiApiKey) { newValue in
+                                    if newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                                        showOpenAI = false
+                                    }
+                                }
                         }
                         .background(Color.white)
                         .overlay(
