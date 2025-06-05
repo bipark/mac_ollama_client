@@ -206,10 +206,3 @@ class LLMService: ObservableObject {
     }
 }
 
-// Keep compatibility with existing OllamaError
-enum OllamaError: Error {
-    case invalidURL
-    case requestFailed
-    case invalidResponse
-    case decodingError
-} 

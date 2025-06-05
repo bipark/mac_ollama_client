@@ -228,11 +228,7 @@ public class LLMBridge: ObservableObject {
                 
                 let requestData = try createChatRequest(content: content, model: selectedModel, image: image)
                 request.httpBody = try JSONSerialization.data(withJSONObject: requestData)
-                
-                print("Request URL: \(requestURL)")
-                print("Request headers: \(request.allHTTPHeaderFields ?? [:])")
-                print("Request body: \(String(data: request.httpBody ?? Data(), encoding: .utf8) ?? "")")
-                
+                                
                 try await self.processStream(request: request)
                 
                 if !tempResponse.isEmpty {
@@ -322,11 +318,7 @@ public class LLMBridge: ObservableObject {
                         
                         let requestData = try createChatRequest(content: content, model: selectedModel, image: image)
                         request.httpBody = try JSONSerialization.data(withJSONObject: requestData)
-                        
-                        print("Request URL: \(requestURL)")
-                        print("Request headers: \(request.allHTTPHeaderFields ?? [:])")
-                        print("Request body: \(String(data: request.httpBody ?? Data(), encoding: .utf8) ?? "")")
-                        
+                                                
                         try await self.processStreamWithContinuation(request: request, continuation: continuation)
                         
                         if !tempResponse.isEmpty {
@@ -598,61 +590,41 @@ public class LLMBridge: ObservableObject {
         var jsonLine = line
         
         if target == .lmstudio {
-            print("LMStudio raw line: '\(line)'")
             
             if line.hasPrefix("data: ") {
                 jsonLine = String(line.dropFirst(6)).trimmingCharacters(in: .whitespacesAndNewlines)
-                print("LMStudio extracted JSON: '\(jsonLine)'")
-                
                 if jsonLine == "[DONE]" || jsonLine.isEmpty { 
-                    print("LMStudio stream finished")
-                    return 
+                    return
                 }
             } else if line.hasPrefix("event:") || line.hasPrefix(":") || line.isEmpty {
-                print("LMStudio skipping SSE metadata: '\(line)'")
                 return
             } else if !line.hasPrefix("{") {
-                print("LMStudio skipping non-JSON line: '\(line)'")
                 return
             }
         }
         
         if target == .claude {
-            print("Claude raw line: '\(line)'")
-            
             if line.hasPrefix("data: ") {
                 jsonLine = String(line.dropFirst(6)).trimmingCharacters(in: .whitespacesAndNewlines)
-                print("Claude extracted JSON: '\(jsonLine)'")
-                
                 if jsonLine == "[DONE]" || jsonLine.isEmpty {
-                    print("Claude stream finished")
                     return
                 }
             } else if line.hasPrefix("event:") || line.hasPrefix(":") || line.isEmpty {
-                print("Claude skipping SSE metadata: '\(line)'")
                 return
             } else if !line.hasPrefix("{") {
-                print("Claude skipping non-JSON line: '\(line)'")
                 return
             }
         }
         
         if target == .openai {
-            print("OpenAI raw line: '\(line)'")
-            
             if line.hasPrefix("data: ") {
                 jsonLine = String(line.dropFirst(6)).trimmingCharacters(in: .whitespacesAndNewlines)
-                print("OpenAI extracted JSON: '\(jsonLine)'")
-                
                 if jsonLine == "[DONE]" || jsonLine.isEmpty {
-                    print("OpenAI stream finished")
                     return
                 }
             } else if line.hasPrefix("event:") || line.hasPrefix(":") || line.isEmpty {
-                print("OpenAI skipping SSE metadata: '\(line)'")
                 return
             } else if !line.hasPrefix("{") {
-                print("OpenAI skipping non-JSON line: '\(line)'")
                 return
             }
         }
@@ -660,7 +632,6 @@ public class LLMBridge: ObservableObject {
         guard !jsonLine.isEmpty,
               let data = jsonLine.data(using: .utf8),
               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-            print("Failed to parse JSON: '\(jsonLine)'")
             return
         }
         
@@ -681,7 +652,6 @@ public class LLMBridge: ObservableObject {
            let content = message["content"] as? String {
             tempResponse += content
             currentResponse = tempResponse
-            print("Ollama content: \(currentResponse)")
         }
         
         if let done = json["done"] as? Bool, done {
@@ -690,42 +660,34 @@ public class LLMBridge: ObservableObject {
     }
     
     private func processLMStudioStream(_ json: [String: Any]) async {
-        print("LMStudio JSON: \(json)")
         
         if let choices = json["choices"] as? [[String: Any]],
            let firstChoice = choices.first,
            let delta = firstChoice["delta"] as? [String: Any],
            let content = delta["content"] as? String {
-            print("LMStudio content chunk: '\(content)'")
             tempResponse += content
             currentResponse = tempResponse
-            print("LMStudio accumulated: '\(currentResponse)'")
         }
         
         if let choices = json["choices"] as? [[String: Any]],
            let firstChoice = choices.first,
            let finishReason = firstChoice["finish_reason"] as? String,
            finishReason == "stop" {
-            print("LMStudio stream completed with finish_reason: stop")
             return
         }
     }
     
     private func processClaudeStream(_ json: [String: Any]) async {
-        print("Claude JSON: \(json)")
         
         if let type = json["type"] as? String {
             switch type {
             case "content_block_delta":
                 if let delta = json["delta"] as? [String: Any],
                    let text = delta["text"] as? String {
-                    print("Claude content chunk: '\(text)'")
                     tempResponse += text
                     currentResponse = tempResponse
-                    print("Claude accumulated: '\(currentResponse)'")
                 }
             case "message_stop":
-                print("Claude stream completed with message_stop")
                 return
             default:
                 break
@@ -734,23 +696,19 @@ public class LLMBridge: ObservableObject {
     }
     
     private func processOpenAIChatStream(_ json: [String: Any]) async {
-        print("OpenAI JSON: \(json)")
-        
         if let choices = json["choices"] as? [[String: Any]],
            let firstChoice = choices.first,
            let delta = firstChoice["delta"] as? [String: Any],
            let content = delta["content"] as? String {
-            print("OpenAI content chunk: '\(content)'")
             tempResponse += content
             currentResponse = tempResponse
-            print("OpenAI accumulated: '\(currentResponse)'")
         }
         
         if let choices = json["choices"] as? [[String: Any]],
            let firstChoice = choices.first,
            let finishReason = firstChoice["finish_reason"] as? String,
            finishReason == "stop" {
-            print("OpenAI stream completed with finish_reason: stop")
+
             return
         }
     }
