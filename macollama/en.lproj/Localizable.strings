@@ -49,7 +49,7 @@
 "l_error2" = "Failed to connect to server\nPlease check if server is running";
 "l_error3" = "Received invalid response";
 "l_error4" = "Failed to process response data";
-"l_q1" = "Hello, I'm LLM Hippo";
+"l_q1" = "Hello, I'm LLM-K";
 "l_a1" = "Hi! I'm an AI assistant based on Ollama. I can help you answer questions, write code, analyze data, and more. Let's start chatting!";
 "l_q2" = "What can you do?";
 "l_a2" = "I can:\n1. Answer various questions\n2. Help write and debug code\n3. Explain complex concepts\n4. Assist with writing and translation\n5. Analyze image content\n\nJust ask me anything, and I'll do my best to help.";

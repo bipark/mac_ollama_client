@@ -1,7 +1,7 @@
 <div align='center'>
 
 
-# ✨ LLM Hippo - Multi LLM Client ✨
+# ✨ LLM-K - Multi LLM Client ✨
 
 _Multi-platform LLM Mac client supporting Ollama, LM Studio, Claude, and OpenAI_
 
@@ -11,13 +11,13 @@ _Multi-platform LLM Mac client supporting Ollama, LM Studio, Claude, and OpenAI_
 
 </div>
 
-# LLM Hippo
+# LLM-K
 
-LLM Hippo is a mac client app that allows you to connect to various LLM services including Ollama, LM Studio, Claude, and OpenAI. You can download and build the source code or download the LLM Hippo app from the [Apple App Store](https://apps.apple.com/us/app/mac-ollama-client/id6741420139).
+LLM-K is a mac client app that allows you to connect to various LLM services including Ollama, LM Studio, Claude, and OpenAI. You can download and build the source code or download the LLM-K app from the [Apple App Store](https://apps.apple.com/us/app/mac-ollama-client/id6741420139).
 
 ## Introduction
 
-LLM Hippo is a versatile client that supports multiple LLM platforms:
+LLM-K is a versatile client that supports multiple LLM platforms:
 - Ollama: Open source software for running LLMs locally
 - LM Studio: Local LLM platform with various model support
 - Claude: Anthropic's advanced AI model
@@ -54,12 +54,12 @@ LLM Hippo is a versatile client that supports multiple LLM platforms:
    - For Ollama: Install Ollama on your computer ([Ollama Download](https://ollama.com/download))
    - For LM Studio: Install LM Studio ([LM Studio Website](https://lmstudio.ai/))
    - For Claude/OpenAI: Obtain API keys from respective platforms
-2. Download the source and build it with Xcode, or download the LLM Hippo app from the [App Store](https://apps.apple.com/us/app/mac-ollama-client/id6741420139)
+2. Download the source and build it with Xcode, or download the LLM-K app from the [App Store](https://apps.apple.com/us/app/mac-ollama-client/id6741420139)
 3. Configure your chosen platform:
    - For Ollama/LM Studio: Install desired models
    - For Claude/OpenAI: Enter your API keys in settings
 4. For local LLMs (Ollama/LM Studio), configure remote access if needed
-5. Launch LLM Hippo and select your preferred service and model
+5. Launch LLM-K and select your preferred service and model
 6. Start your conversation!
 
 ## System requirements
@@ -90,9 +90,9 @@ LLM Hippo is a versatile client that supports multiple LLM platforms:
 
 ## License
 
-LLM Hippo is licensed under the GNU license. For more information, please refer to the [LICENSE](LICENSE) file.
+LLM-K is licensed under the GNU license. For more information, please refer to the [LICENSE](LICENSE) file.
 
 ## Contact
 
-For questions or bug reports about LLM Hippo, please send an email to rtlink.park@gmail.com.
+For questions or bug reports about LLM-K, please send an email to rtlink.park@gmail.com.
 

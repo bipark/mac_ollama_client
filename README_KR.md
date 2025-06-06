@@ -1,7 +1,7 @@
 <div align='center'>
 
 
-# ✨ LLM Hippo - 멀티 LLM 클라이언트 ✨
+# ✨ LLM-K - 멀티 LLM 클라이언트 ✨
 
 _Ollama, LM Studio, Claude, OpenAI를 지원하는 멀티 플랫폼 Mac 클라이언트_
 
@@ -12,13 +12,13 @@ _Ollama, LM Studio, Claude, OpenAI를 지원하는 멀티 플랫폼 Mac 클라�
 
 </div>
 
-#  LLM Hippo
+#  LLM-K
 
-LLM Hippo는 Ollama, LM Studio, Claude, OpenAI 등 다양한 LLM 서비스에 연결할 수 있는 Mac 클라이언트 앱입니다. 소스 코드를 다운로드하여 직접 빌드하거나 [Apple App Store](https://apps.apple.com/us/app/mac-ollama-client/id6741420139)에서 LLM Hippo 앱을 다운로드할 수 있습니다.
+LLM-K는 Ollama, LM Studio, Claude, OpenAI 등 다양한 LLM 서비스에 연결할 수 있는 Mac 클라이언트 앱입니다. 소스 코드를 다운로드하여 직접 빌드하거나 [Apple App Store](https://apps.apple.com/us/app/mac-ollama-client/id6741420139)에서 LLM-K 앱을 다운로드할 수 있습니다.
 
 ##  소개
 
-LLM Hippo는 다양한 LLM 플랫폼을 지원하는 다목적 클라이언트입니다:
+LLM-K는 다양한 LLM 플랫폼을 지원하는 다목적 클라이언트입니다:
 - Ollama: 로컬에서 LLM을 실행할 수 있는 오픈소스 소프트웨어
 - LM Studio: 다양한 모델을 지원하는 로컬 LLM 플랫폼
 - Claude: Anthropic의 고급 AI 모델
@@ -55,12 +55,12 @@ LLM Hippo는 다양한 LLM 플랫폼을 지원하는 다목적 클라이언트�
    - Ollama: 컴퓨터에 Ollama 설치 ([Ollama 다운로드](https://ollama.com/download))
    - LM Studio: LM Studio 설치 ([LM Studio 웹사이트](https://lmstudio.ai/))
    - Claude/OpenAI: 각 플랫폼에서 API 키 획득
-2. 소스를 다운로드하여 Xcode로 빌드하거나 [App Store](https://apps.apple.com/us/app/mac-ollama-client/id6741420139)에서 LLM Hippo 앱 다운로드
+2. 소스를 다운로드하여 Xcode로 빌드하거나 [App Store](https://apps.apple.com/us/app/mac-ollama-client/id6741420139)에서 LLM-K 앱 다운로드
 3. 선택한 플랫폼 구성:
    - Ollama/LM Studio: 원하는 모델 설치
    - Claude/OpenAI: 설정에 API 키 입력
 4. 로컬 LLM(Ollama/LM Studio)의 경우 필요시 원격 접근 구성
-5. LLM Hippo를 실행하고 원하는 서비스와 모델 선택
+5. LLM-K를 실행하고 원하는 서비스와 모델 선택
 6. 대화 시작!
 
 ##  시스템 요구사항
@@ -91,9 +91,9 @@ LLM Hippo는 다양한 LLM 플랫폼을 지원하는 다목적 클라이언트�
 
 ## 라이선스
 
-LLM Hippo는 GNU 라이선스를 따릅니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
+LLM-K는 GNU 라이선스를 따릅니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
 
 ## 연락처
 
-LLM Hippo에 대한 문의나 버그 리포트는 rtlink.park@gmail.com으로 이메일을 보내주세요.
+LLM-K에 대한 문의나 버그 리포트는 rtlink.park@gmail.com으로 이메일을 보내주세요.
 

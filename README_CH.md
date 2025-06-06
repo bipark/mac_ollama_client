@@ -1,4 +1,4 @@
-# ✨ LLM Hippo - 多平台LLM客户端 ✨
+# ✨ LLM-K - 多平台LLM客户端 ✨
 
 _支持Ollama、LM Studio、Claude和OpenAI的多平台Mac客户端_
 
@@ -6,13 +6,13 @@ _支持Ollama、LM Studio、Claude和OpenAI的多平台Mac客户端_
 [한국어](README_KR.md) •
 [日本語](README_JP.md)
 
-# LLM Hippo
+# LLM-K
 
-LLM Hippo是一个Mac客户端应用程序，可以连接到包括Ollama、LM Studio、Claude和OpenAI在内的各种LLM服务。您可以下载源代码自行构建，或从[Apple App Store](https://apps.apple.com/us/app/mac-ollama-client/id6741420139)下载LLM Hippo应用程序。
+LLM-K是一个Mac客户端应用程序，可以连接到包括Ollama、LM Studio、Claude和OpenAI在内的各种LLM服务。您可以下载源代码自行构建，或从[Apple App Store](https://apps.apple.com/us/app/mac-ollama-client/id6741420139)下载LLM-K应用程序。
 
 ## 简介
 
-LLM Hippo是一个支持多种LLM平台的多功能客户端：
+LLM-K是一个支持多种LLM平台的多功能客户端：
 - Ollama：可在本地运行LLM的开源软件
 - LM Studio：支持多种模型的本地LLM平台
 - Claude：Anthropic的高级AI模型
@@ -49,12 +49,12 @@ LLM Hippo是一个支持多种LLM平台的多功能客户端：
    - Ollama：在计算机上安装Ollama（[Ollama下载](https://ollama.com/download)）
    - LM Studio：安装LM Studio（[LM Studio网站](https://lmstudio.ai/)）
    - Claude/OpenAI：从各平台获取API密钥
-2. 下载源代码并用Xcode构建，或从[App Store](https://apps.apple.com/us/app/mac-ollama-client/id6741420139)下载LLM Hippo应用程序
+2. 下载源代码并用Xcode构建，或从[App Store](https://apps.apple.com/us/app/mac-ollama-client/id6741420139)下载LLM-K应用程序
 3. 配置所选平台：
    - Ollama/LM Studio：安装所需模型
    - Claude/OpenAI：在设置中输入API密钥
 4. 对于本地LLM（Ollama/LM Studio），根据需要配置远程访问
-5. 启动LLM Hippo并选择所需的服务和模型
+5. 启动LLM-K并选择所需的服务和模型
 6. 开始对话！
 
 ## 系统要求
@@ -85,8 +85,8 @@ LLM Hippo是一个支持多种LLM平台的多功能客户端：
 
 ## 许可证
 
-LLM Hippo基于GNU许可证。有关详细信息，请参阅[LICENSE](LICENSE)文件。
+LLM-K基于GNU许可证。有关详细信息，请参阅[LICENSE](LICENSE)文件。
 
 ## 联系方式
 
-如有关于LLM Hippo的问题或错误报告，请发送电子邮件至rtlink.park@gmail.com。
+如有关于LLM-K的问题或错误报告，请发送电子邮件至rtlink.park@gmail.com。
