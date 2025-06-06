@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "9F63C8C22D49F5C6001C2645"
-               BuildableName = "Hippo.app"
+               BuildableName = "LLM-K.app"
                BlueprintName = "macollama"
                ReferencedContainer = "container:macollama.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9F63C8C22D49F5C6001C2645"
-            BuildableName = "Hippo.app"
+            BuildableName = "LLM-K.app"
             BlueprintName = "macollama"
             ReferencedContainer = "container:macollama.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9F63C8C22D49F5C6001C2645"
-            BuildableName = "Hippo.app"
+            BuildableName = "LLM-K.app"
             BlueprintName = "macollama"
             ReferencedContainer = "container:macollama.xcodeproj">
          </BuildableReference>
